@@ -1,0 +1,12 @@
+POST  http://localhost:8080/login
+Content-Type: application/json
+
+
+{
+    "username": "vaibhavdhas",
+    "password": "dhas"
+}
+
+###
+
+GET http://localhost:8080/cart-items
