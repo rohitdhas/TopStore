@@ -1,4 +1,5 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
 export default function CreateAc() {
   const fullNameRef = useRef("");
@@ -6,6 +7,23 @@ export default function CreateAc() {
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const password_againRef = useRef("");
+
+  const history = useHistory();
+
+  useEffect(() => {
+    fetch("http://localhost:8080/data", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then(({ data, message }) => {
+        if (!data) {
+          console.log(message);
+          return;
+        }
+        history.push("/");
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   function handleAccountCreation(e) {
     e.preventDefault();

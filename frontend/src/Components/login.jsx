@@ -1,27 +1,19 @@
 import { useRef, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { setUserData } from "../Redux/profileData";
 import { useHistory } from "react-router-dom";
 
 export default function Login() {
   const history = useHistory();
-  const dispatch = useDispatch();
 
   const usernameRef = useRef("");
   const passwordRef = useRef("");
 
   useEffect(() => {
-    fetch("http://localhost:8080/data", {
+    fetch("http://localhost:8080/isAuthenticated", {
       credentials: "include",
     })
       .then((res) => res.json())
-      .then(({ data, message }) => {
-        if (!data) {
-          console.log(message);
-        } else {
-          history.push("/");
-          console.log(message);
-        }
+      .then((isAuthenticated) => {
+        if (isAuthenticated) history.push("/");
       })
       .catch((err) => console.log(err));
   }, []);
@@ -46,8 +38,7 @@ export default function Login() {
         if (!data) {
           console.log(message);
         } else {
-          dispatch(setUserData(data));
-          history.push("/");
+          history.goBack();
           console.log(message);
         }
       })

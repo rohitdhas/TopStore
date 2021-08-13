@@ -1,36 +1,37 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
-import { useSelector, useDispatch } from "react-redux";
-import { setUserData } from "../Redux/profileData";
 
 export default function Navbar() {
   const userInput = useRef("");
   const history = useHistory();
-  const dispatch = useDispatch();
-
-  // User Data from Redux store
-  const { username, cart, isLoggedIn } = useSelector(
-    (state) => state.profileData
-  );
+  const [userData, setUserData] = useState({});
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      fetch("http://localhost:8080/data", {
-        credentials: "include",
+    fetch("http://localhost:8080/data", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then(({ message, data }) => {
+        if (!data) {
+          console.log(message);
+        } else {
+          setUserData(data);
+        }
       })
-        .then((res) => res.json())
-        .then(({ message, data }) => {
-          if (!data) {
-            console.log(message);
-          } else {
-            dispatch(setUserData(data));
-            console.log(message);
-          }
-        })
-        .catch((err) => console.log(err));
-    }
-  });
+      .catch((err) => console.log(err));
+  }, []);
+
+  function fireLogout() {
+    fetch("http://localhost:8080/logout", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setUserData({});
+        console.log(data);
+      });
+  }
 
   function searchProducts(e) {
     const { value } = userInput.current;
@@ -60,10 +61,16 @@ export default function Navbar() {
       </div>
       <div>
         <span className="user_avatar">
-          {!username ? <a href="/login">Login/SignUp</a> : username}
+          {!userData.username ? (
+            <a href="/login">Login/SignUp</a>
+          ) : (
+            <span>
+              {userData.username} - <button onClick={fireLogout}>Logout</button>
+            </span>
+          )}
         </span>
         <span className="cart">
-          <Link to="/cart">Cart</Link> - ( {cart.length} ) items
+          <Link to="/cart">Cart</Link>
         </span>
       </div>
     </nav>

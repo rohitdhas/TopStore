@@ -5,7 +5,7 @@
 }
 
 * button {
-  margin: 5px;
+  margin: 5px 0;
 }
 
 /*---- Nav Bar Styles Start ----*/
@@ -105,8 +105,9 @@ nav span {
   align-items: center;
 }
 
-.product_detail_page .product_img {
-  font-size: 15rem;
+.product_detail_page .product_img img {
+  height: 500px;
+  width: 450px;
 }
 /*---- Product Detail Page End */
 

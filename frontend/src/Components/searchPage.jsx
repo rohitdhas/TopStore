@@ -1,12 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { updateCart } from "../Redux/profileData";
 
 export default function SearchPage() {
   // Hooks Start
   const { product } = useParams();
-  const dispatch = useDispatch();
   const [dbProducts, setDBProducts] = useState([]);
 
   useEffect(() => {
@@ -18,23 +15,16 @@ export default function SearchPage() {
   // _______________________END OF HOOKS_______________________
 
   function addToCart(productData) {
-    fetch("http://localhost:8080/cart/add", {
+    fetch("http://localhost:8080/cart/modify", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify({ productData }),
+      body: JSON.stringify({ type: "ADD", data: productData }),
     })
       .then((res) => res.json())
-      .then(({ cart, message }) => {
-        if (!cart) {
-          console.log(message);
-        } else {
-          // dispatch(updateCart(cart));
-          console.log(cart);
-        }
-      })
+      .then(({ message }) => console.log(message))
       .catch((err) => console.log(err));
   }
 
@@ -51,13 +41,15 @@ export default function SearchPage() {
             name,
             price,
             description,
-            count: 1,
+            quantity: 1,
           };
           return (
             <div className="product_card" key={_id}>
-              <img className="card_img" src={image} />
+              <img className="card_img" src={image} alt="product-img" />
               <span>
-                <h3>Product Name - {name}</h3>
+                <h3>
+                  <a href={`/product/${_id}`}>Product Name - {name}</a>
+                </h3>
                 <h4>Price - ${price}/-</h4>
               </span>
               <button onClick={() => addToCart(productData)}>
@@ -67,7 +59,7 @@ export default function SearchPage() {
           );
         })
       ) : (
-        <h1>Loading...🚀</h1>
+        <h1>Waiting for Data...🚀</h1>
       )}
     </div>
   );

@@ -10,6 +10,7 @@ const passport = require("passport");
 const Product = require("./model/productSchema");
 const User = require("./model/usersSchema");
 const cookieParser = require("cookie-parser");
+const { response } = require("express");
 const port = 8080;
 // _________________________END OF IMPORTS________________________
 
@@ -59,6 +60,11 @@ const resMessages = {
   productCreated: "Product Created Successfully!✅",
   unauthorized: "Not Authenticated ⚠",
   nodataFound: "No Items found!",
+  loggedOut: "Logged Out Successfully!✔",
+  cartItemUpdated: "Cart Item Updated Successfully🚀",
+  itemAlreadyExist:
+    "Can't Finish this Action❌ - Item already exist in the Cart!",
+  itemRemoved: "1 item removed from cart✅",
 };
 
 // ________________________END OF RES MESSAGES________________________
@@ -83,6 +89,11 @@ app.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
+app.get("/logout", (req, res) => {
+  req.logOut();
+  res.json({ message: resMessages.loggedOut });
+});
+
 app.get("/product/:search", (req, res) => {
   const productTags = req.params.search.toLowerCase().split(" ");
 
@@ -91,6 +102,14 @@ app.get("/product/:search", (req, res) => {
       res.json(data);
     })
     .catch((err) => console.log(err));
+});
+
+app.get("/product-detail/:id", (req, res) => {
+  const id = req.params.id;
+  Product.findById(id, (err, doc) => {
+    if (err) res.send({ message: resMessages.err });
+    else res.send(doc);
+  });
 });
 
 app.post("/user/create", async (req, res) => {
@@ -108,6 +127,73 @@ app.post("/user/create", async (req, res) => {
   });
 });
 
+// Route to modify cart - add or remove cart items
+app.post("/cart/modify", (req, res) => {
+  const { type, data } = req.body;
+  if (!req.user) {
+    return res.json({ message: resMessages.unauthorized });
+  } else {
+    const { username } = req.user;
+
+    if (type === "ADD") {
+      // Check if product exixt in the cart or not
+      User.findOne({ username, "cart._id": data._id }, (err, doc) => {
+        if (err) return res.send("err");
+        if (doc === null) {
+          User.updateOne({ username }, { $push: { cart: data } })
+            .then(() => res.send({ message: resMessages.addedToCart }))
+            .catch((err) => console.log(err));
+        } else {
+          res.send({ message: resMessages.itemAlreadyExist });
+        }
+      });
+    } else {
+      User.updateOne({ username }, { $pull: { cart: { _id: data._id } } })
+        .then(() => res.send({ message: resMessages.itemRemoved }))
+        .catch((err) => console.log(err));
+    }
+  }
+});
+
+app.post("/cart/item/modify", (req, res) => {
+  const { type, data } = req.body;
+  if (!req.user) return res.send({ message: resMessages.unauthorized });
+  else {
+    const { username } = req.user;
+
+    let updateQuantity = data.quantity;
+    if (type === "INCREMENT") {
+      updateQuantity += 1;
+    } else updateQuantity -= 1;
+
+    User.updateOne(
+      { username, "cart._id": data._id },
+      { $set: { "cart.$.quantity": updateQuantity } }
+    )
+      .then(() => res.send({ message: resMessages.cartItemUpdated }))
+      .catch(() => res.send({ message: resMessages.err }));
+  }
+});
+
+app.get("/cart-items", (req, res) => {
+  if (!req.user) res.json({ message: resMessages.err });
+  else {
+    const { cart } = req.user;
+    res.json(cart);
+  }
+});
+
+app.get("/data", (req, res) => {
+  if (req.user) {
+    const { username, full_name, email } = req.user;
+    res.json({
+      message: resMessages.loginSuccess,
+      data: { username, full_name, email },
+    });
+  } else res.json({ message: resMessages.unauthorized });
+});
+
+// _____________________ NOT SO IMP ROUTES ________________________
 app.post("/product/add", (req, res) => {
   const product = new Product(req.body);
   try {
@@ -118,40 +204,9 @@ app.post("/product/add", (req, res) => {
   }
 });
 
-app.post("/cart/add", (req, res) => {
-  const { productData } = req.body;
-  if (!req.user) {
-    return res.json({ message: resMessages.unauthorized });
-  } else {
-    const { username, cart } = req.user;
-    User.findOneAndUpdate(
-      { username },
-      { cart: [...cart, productData] },
-      (err) => {
-        if (err) res.json({ message: resMessages.err });
-        else {
-          User.findOne({ username }, (err, doc) => {
-            if (err) res.json({ message: resMessages.err });
-            else res.json({ message: resMessages.addedToCart, cart: doc.cart });
-          });
-        }
-      }
-    );
-  }
-});
-
-app.get("/cart-items", (req, res) => {
-  if (!req.user) res.json({ message: resMessages.err });
-  else {
-    const { cart } = req.user;
-    res.send(cart);
-  }
-});
-
-app.get("/data", (req, res) => {
-  if (req.user) {
-    res.json({ message: resMessages.loginSuccess, data: req.user });
-  } else res.json({ message: resMessages.unauthorized });
+app.get("/isAuthenticated", (req, res) => {
+  if (req.user) res.send(true);
+  else res.send(false);
 });
 
 // ________________________END OF ROUTES________________________

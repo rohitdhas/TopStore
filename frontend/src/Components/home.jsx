@@ -1,4 +1,4 @@
-import box from "../media/box.png";
+import box from "../Images/box.png";
 
 export default function Home() {
   return (
@@ -15,7 +15,6 @@ export default function Home() {
             non alias repellat placeat aspernatur corporis voluptatibus
             voluptate veritatis dicta ipsum maxime.
           </p>
-          <button>Log In</button>
           <button>Explore Products</button>
         </div>
         <div className="home_img">
