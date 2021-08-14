@@ -1,22 +1,29 @@
 import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 
-export default function Cart() {
+export default function Cart({ notify }) {
   let cartTotal = 0;
   // __________________________HOOKS START___________________________________
   const [cartItems, setCartItems] = useState([]);
 
-  createPortal(<h1>Loading...</h1>, document.getElementById("portal"));
-
   useEffect(() => {
+    let loader = document.getElementById("loader_overlay");
+    loader.classList.add("active");
+
     getCartData().then((data) => {
-      if ("message" in data) return;
+      if ("message" in data) {
+        loader.classList.remove("active");
+        return;
+      }
       setCartItems(data);
+      loader.classList.remove("active");
     });
   }, []);
   // __________________________END OF HOOKS___________________________________
 
   function removeFromCart(productID) {
+    let loader = document.getElementById("loader_overlay");
+    loader.classList.add("active");
+
     fetch("http://localhost:8080/cart/modify", {
       credentials: "include",
       body: JSON.stringify({ type: "REMOVE", data: { _id: productID } }),
@@ -27,12 +34,17 @@ export default function Cart() {
     })
       .then((res) => res.json())
       .then(({ message }) => {
-        console.log(message);
+        notify(message);
+        loader.classList.remove("active");
         getCartData().then((data) => setCartItems(data));
+        notify(message);
       });
   }
 
   function modifyQuantity(data) {
+    let loader = document.getElementById("loader_overlay");
+    loader.classList.add("active");
+
     fetch("http://localhost:8080/cart/item/modify", {
       headers: {
         "Content-Type": "application/json",
@@ -42,8 +54,8 @@ export default function Cart() {
       body: JSON.stringify(data),
     })
       .then((res) => res.json())
-      .then(({ message }) => {
-        console.log(message);
+      .then(() => {
+        loader.classList.remove("active");
         getCartData().then((data) => setCartItems(data));
       })
       .catch((err) => console.log(err));

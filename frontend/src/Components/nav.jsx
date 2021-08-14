@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
 
-export default function Navbar() {
+export default function Navbar({ notify }) {
   const userInput = useRef("");
   const history = useHistory();
   const [userData, setUserData] = useState({});
@@ -23,13 +23,17 @@ export default function Navbar() {
   }, []);
 
   function fireLogout() {
+    let loader = document.getElementById("loader_overlay");
+    loader.classList.add("active");
+
     fetch("http://localhost:8080/logout", {
       credentials: "include",
     })
       .then((res) => res.json())
-      .then((data) => {
+      .then(({ message }) => {
         setUserData({});
-        console.log(data);
+        notify(message);
+        loader.classList.remove("active");
       });
   }
 

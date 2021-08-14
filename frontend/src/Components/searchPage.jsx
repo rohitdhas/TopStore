@@ -1,20 +1,32 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-export default function SearchPage() {
+export default function SearchPage({ notify }) {
   // Hooks Start
   const { product } = useParams();
   const [dbProducts, setDBProducts] = useState([]);
 
   useEffect(() => {
+    let loader = document.getElementById("loader_overlay");
+    loader.classList.add("active");
+
     fetch(`http://localhost:8080/product/${product}`)
       .then((data) => data.json())
-      .then((res) => setDBProducts(res))
+      .then((res) => {
+        if (!res.length) {
+          notify(`Try Searching Something Else!`);
+        }
+        setDBProducts(res);
+        loader.classList.remove("active");
+      })
       .catch((err) => console.log(err));
   }, [product]);
   // _______________________END OF HOOKS_______________________
 
   function addToCart(productData) {
+    let loader = document.getElementById("loader_overlay");
+    loader.classList.add("active");
+
     fetch("http://localhost:8080/cart/modify", {
       method: "POST",
       headers: {
@@ -24,7 +36,10 @@ export default function SearchPage() {
       body: JSON.stringify({ type: "ADD", data: productData }),
     })
       .then((res) => res.json())
-      .then(({ message }) => console.log(message))
+      .then(({ message }) => {
+        notify(message);
+        loader.classList.remove("active");
+      })
       .catch((err) => console.log(err));
   }
 
@@ -59,7 +74,7 @@ export default function SearchPage() {
           );
         })
       ) : (
-        <h1>Waiting for Data...🚀</h1>
+        <h1>No Data Found!</h1>
       )}
     </div>
   );

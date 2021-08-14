@@ -2,11 +2,58 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: Gotham;
 }
 
 * button {
   margin: 5px 0;
 }
+
+/*---- Loading Spinner Styles Start ----*/
+#loader_overlay {
+  display: none;
+}
+
+#loader_overlay.active {
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#loader_overlay #spinner {
+  height: 70px;
+  width: 70px;
+  border-radius: 50%;
+  border: 10px solid rgba(0, 0, 0, 0.486);
+  border-top: 10px solid royalblue;
+  animation: spinner 0.7s infinite;
+}
+
+@keyframes spinner {
+  from {
+    transform: rotate(0deg);
+    border-top: 10px solid greenyellow;
+  }
+  to {
+    transform: rotate(360deg);
+    border-top: 10px solid royalblue;
+  }
+}
+
+#loader_overlay p {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/*---- Loading Spinner Styles End ----*/
 
 /*---- Nav Bar Styles Start ----*/
 nav {

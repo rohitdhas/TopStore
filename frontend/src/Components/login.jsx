@@ -1,24 +1,31 @@
 import { useRef, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
-export default function Login() {
+export default function Login({ notify }) {
   const history = useHistory();
 
   const usernameRef = useRef("");
   const passwordRef = useRef("");
 
   useEffect(() => {
+    let loader = document.getElementById("loader_overlay");
+    loader.classList.add("active");
+
     fetch("http://localhost:8080/isAuthenticated", {
       credentials: "include",
     })
       .then((res) => res.json())
       .then((isAuthenticated) => {
+        loader.classList.remove("active");
         if (isAuthenticated) history.push("/");
       })
       .catch((err) => console.log(err));
   }, []);
 
   function handleLogin(event) {
+    let loader = document.getElementById("loader_overlay");
+    loader.classList.add("active");
+
     event.preventDefault();
     if (!usernameRef.current || !passwordRef.current) return;
 
@@ -36,10 +43,12 @@ export default function Login() {
       .then((res) => res.json())
       .then(({ data, message }) => {
         if (!data) {
-          console.log(message);
+          loader.classList.remove("active");
+          notify(message);
         } else {
+          notify(message);
+          loader.classList.remove("active");
           history.goBack();
-          console.log(message);
         }
       })
       .catch((err) => console.log(err));

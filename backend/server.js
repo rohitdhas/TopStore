@@ -58,7 +58,7 @@ const resMessages = {
   accountCreated: "Account Created Successfully!✅",
   addedToCart: "1 Item added to Cart ✅",
   productCreated: "Product Created Successfully!✅",
-  unauthorized: "Not Authenticated ⚠",
+  unauthorized: "Not Logged In ⚠",
   nodataFound: "No Items found!",
   loggedOut: "Logged Out Successfully!✔",
   cartItemUpdated: "Cart Item Updated Successfully🚀",
@@ -162,9 +162,12 @@ app.post("/cart/item/modify", (req, res) => {
     const { username } = req.user;
 
     let updateQuantity = data.quantity;
-    if (type === "INCREMENT") {
+
+    if (type === "INCREMENT" && updateQuantity < 10) {
       updateQuantity += 1;
-    } else updateQuantity -= 1;
+    } else if (type === "DECREMENT" && updateQuantity !== 1) {
+      updateQuantity -= 1;
+    } else return res.send({ message: resMessages.err });
 
     User.updateOne(
       { username, "cart._id": data._id },
