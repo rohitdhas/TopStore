@@ -7,7 +7,6 @@ export default function Login({ notify }) {
 
   const emailRef = useRef("");
   const passwordRef = useRef("");
-  // const herokuDeploy = "https://still-earth-12280.herokuapp.com/";
   const localhost = "http://localhost:8080/";
 
   useEffect(() => {
@@ -51,7 +50,7 @@ export default function Login({ notify }) {
         } else {
           notify(message);
           loader.classList.remove("active");
-          history.goBack();
+          history.push("/");
         }
       })
       .catch((err) => console.log(err));
