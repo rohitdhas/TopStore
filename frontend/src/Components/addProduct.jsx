@@ -12,14 +12,7 @@ export default function AddProduct() {
 
   function handleAddProduct(e) {
     e.preventDefault();
-    const refs = [
-      nameRef,
-      priceRef,
-      urlRef,
-      descriptionRef,
-      categoryRef,
-      tagsRef,
-    ];
+    const refs = [nameRef, priceRef, urlRef, categoryRef, tagsRef];
     // Cheking for empty values
     refs.forEach((ref) => {
       if (!ref.current.value) return;
@@ -95,7 +88,7 @@ export default function AddProduct() {
         </div>
         <button type="submit">Add Product</button>
       </form>
-      <div>{!serverRes ? <></> : <h2>{serverRes}</h2>}</div>
+      <div>{!serverRes ? null : <h2>{serverRes}</h2>}</div>
     </div>
   );
 }

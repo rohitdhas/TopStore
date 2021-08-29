@@ -1,5 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 
 export default function SearchPage({ notify }) {
   // Hooks Start
@@ -46,36 +48,85 @@ export default function SearchPage({ notify }) {
   return (
     // JSX
     <div className="search_page">
-      <h2>Search results for - "{product}"</h2>
-      {dbProducts.length !== 0 ? (
-        dbProducts.map((item) => {
-          const { _id, image, name, price, description } = item;
-          const productData = {
-            _id,
-            image,
-            name,
-            price,
-            description,
-            quantity: 1,
-          };
-          return (
-            <div className="product_card" key={_id}>
-              <img className="card_img" src={image} alt="product-img" />
-              <span>
-                <h3>
-                  <a href={`/product/${_id}`}>Product Name - {name}</a>
-                </h3>
-                <h4>Price - ${price}/-</h4>
-              </span>
-              <button onClick={() => addToCart(productData)}>
-                Add to Cart🛒
-              </button>
-            </div>
-          );
-        })
-      ) : (
-        <h1>No Data Found!</h1>
-      )}
+      <p>
+        Search results for - "{product}" ({dbProducts.length} results found)
+      </p>
+      {dbProducts.length !== 0
+        ? dbProducts.map((item) => {
+            const { _id, image, name, price, description } = item;
+            const productData = {
+              _id,
+              image,
+              name,
+              price,
+              description,
+              quantity: 1,
+            };
+            return (
+              <ProductCard key={_id}>
+                <span>
+                  <img className="card_img" src={image} alt="product-img" />
+                  <div>
+                    <h3>{name}</h3>
+                    <h4>Price - ${price}/-</h4>
+                    <Link to={`/product/${_id}`}>
+                      <button>View Product</button>
+                    </Link>
+                  </div>
+                </span>
+                <button onClick={() => addToCart(productData)}>
+                  Add to Cart🛒
+                </button>
+              </ProductCard>
+            );
+          })
+        : null}
     </div>
   );
 }
+
+const ProductCard = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  margin: 10px 0;
+  border-bottom: 2px solid gray;
+
+  span {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    div * {
+      margin: 8px 0;
+    }
+
+    & * {
+      margin: 0 10px;
+    }
+
+    button {
+      background-color: #202020;
+    }
+  }
+
+  .card_img {
+    width: 200px;
+    height: 200px;
+  }
+
+  button {
+    padding: 7px 14px;
+    margin: 5px 0;
+    background-color: blueviolet;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+
+    &:hover {
+      background-color: #591797;
+    }
+  }
+`;

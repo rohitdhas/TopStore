@@ -1,38 +1,46 @@
 import styled from "styled-components";
+// import { useState } from "react";
 
 export default function ResCard({ message }) {
   return (
     <Box>
-      <Card id="card">
+      <Card className="card">
         <p>{message}</p>
       </Card>
     </Box>
   );
 }
 
-const Box = styled.div`
+const Box = styled.ul`
   display: flex;
   justify-content: center;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  flex-direction: column;
+
+  li {
+    list-style: none;
+  }
 `;
 
-const Card = styled.div`
+const Card = styled.li`
   height: auto;
   width: max-content;
-  background-color: #4ccd32;
+  background-color: #892be2b3;
+  border: 2px solid blueviolet;
   font-size: 1.2rem;
   padding: 10px;
   margin: 10px auto;
   color: white;
   border-radius: 5px;
   z-index: 100;
-  transform: translateY(70px) scaleX(0);
-  transition: all 0.5s ease-in-out;
-  position: fixed;
-  bottom: 0;
-  opacity: 0;
+  transform: translateY(70px);
+  transition: all 0.2s ease-in-out;
 
   &.active {
     opacity: 1;
-    transform: translateY(-20px) scaleX(1);
+    transform: translateY(-20px);
   }
 `;

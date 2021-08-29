@@ -1,9 +1,9 @@
 import { useRef, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import styled from "styled-components";
 
-export default function CreateAc() {
+export default function CreateAc({ notify }) {
   const fullNameRef = useRef("");
-  const usernameRef = useRef("");
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const password_againRef = useRef("");
@@ -11,25 +11,31 @@ export default function CreateAc() {
   const history = useHistory();
 
   useEffect(() => {
+    let loader = document.getElementById("loader_overlay");
+    loader.classList.add("active");
+
     fetch("http://localhost:8080/data", {
       credentials: "include",
     })
       .then((res) => res.json())
-      .then(({ data, message }) => {
+      .then(({ data }) => {
         if (!data) {
-          console.log(message);
+          loader.classList.remove("active");
           return;
         }
-        history.push("/");
+        loader.classList.remove("active");
+        history.goBack();
       })
       .catch((err) => console.log(err));
   }, []);
 
   function handleAccountCreation(e) {
+    let loader = document.getElementById("loader_overlay");
+    loader.classList.add("active");
+
     e.preventDefault();
     const userInputsRefs = [
       fullNameRef,
-      usernameRef,
       emailRef,
       passwordRef,
       password_againRef,
@@ -39,10 +45,10 @@ export default function CreateAc() {
     userInputsRefs.forEach((input) => {
       if (!input.current.value) return;
     });
+
     if (passwordRef.current.value !== password_againRef.current.value) return;
 
     const userData = {
-      username: usernameRef.current.value,
       full_name: fullNameRef.current.value,
       email: emailRef.current.value,
       password: passwordRef.current.value,
@@ -58,21 +64,21 @@ export default function CreateAc() {
       credentials: "include",
     })
       .then((res) => res.json())
-      .then(({ message }) => console.log(message))
+      .then(({ message }) => {
+        loader.classList.remove("active");
+        history.push("/login");
+        notify(message);
+      })
       .catch((err) => console.log(err));
   }
 
   return (
-    <div>
-      <h2>Create an Account</h2>
+    <Form>
+      <h1>Create an Account</h1>
       <form onSubmit={handleAccountCreation}>
         <div>
           <label htmlFor="name">Name</label>
           <input type="text" ref={fullNameRef} />
-        </div>
-        <div>
-          <label htmlFor="username">Username</label>
-          <input type="text" ref={usernameRef} />
         </div>
         <div>
           <label htmlFor="email">Email</label>
@@ -88,9 +94,62 @@ export default function CreateAc() {
         </div>
         <button type="submit">Create Account</button>
         <h3>
-          <a href="/">Click Here</a> To Log in
+          <a href="/login">Click Here</a> To Log in
         </h3>
       </form>
-    </div>
+    </Form>
   );
 }
+
+const Form = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+
+  h1 {
+    margin-bottom: 20px;
+  }
+
+  form {
+    border-radius: 7px;
+    padding: 20px;
+    background-color: #892be2a0;
+    border: 2px solid blueviolet;
+    color: white;
+
+    input {
+      color: white;
+      border: none;
+      background: transparent;
+      border-bottom: 1px solid white;
+      outline: none;
+      height: 30px;
+      width: 100%;
+      margin: 5px 0;
+      font-size: 1.03rem;
+      transition: all 0.2s;
+
+      ::placeholder {
+        color: white;
+      }
+
+      &:focus {
+        border-bottom: 2px solid blueviolet;
+      }
+    }
+
+    button {
+      padding: 5px 10px;
+      margin: 10px 0;
+      outline: none;
+      border: none;
+      cursor: pointer;
+      background-color: white;
+      font-size: 1.1rem;
+      border-radius: 5px;
+      /* transition: all 0.3s; */
+    }
+  }
+`;

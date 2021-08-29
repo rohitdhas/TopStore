@@ -1,5 +1,6 @@
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
+import styled from "styled-components";
 
 export default function ProductDetails({ notify }) {
   const { productID } = useParams();
@@ -42,29 +43,69 @@ export default function ProductDetails({ notify }) {
   }
 
   return (
-    <div className="product_detail_page">
+    <Details className="product_detail_page">
       {"_id" in productData ? (
         <>
           <div className="product_img">
             <img src={productData.image} alt="productImg" />
           </div>
           <div className="product_info">
-            <h2>{productData.name}</h2>
-            <h5>Price - ${productData.price}</h5>
-            {/* <div className="product_options">
-              <span>Select Size - </span>
-              S<input type="radio" name="size" />
-              M<input type="radio" name="size" />
-              L<input type="radio" name="size" />
-            </div> */}
-            <p className="product_description">{productData.description}</p>
+            <h1>{productData.name}</h1>
+            <p className="price">Price - ${productData.price}</p>
+            <p className="product_description">
+              <strong>Product Description</strong>
+              <br />
+              {productData.description}
+            </p>
             <button onClick={addToCart}>Add to Cart🛒</button>
-            <button>Buy Now</button>
           </div>
         </>
       ) : (
         <h1>Getting Data from Server...🚀</h1>
       )}
-    </div>
+    </Details>
   );
 }
+
+const Details = styled.div`
+  height: 90vh;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 0 40px;
+
+  .product_img img {
+    height: 400px;
+    width: 390px;
+  }
+
+  .product_info {
+    * {
+      margin: 15px 0;
+    }
+    .price {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: blueviolet;
+      text-decoration: underline;
+    }
+    .product_description {
+      width: 500px;
+    }
+  }
+
+  button {
+    padding: 7px 14px;
+    margin: 5px 0;
+    background-color: blueviolet;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+
+    &:hover {
+      background-color: #7515ce;
+    }
+  }
+`;

@@ -2,15 +2,16 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const stripe = require("stripe")(process.env.STRIPE_PRIVET_KEY);
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
 const session = require("express-session");
+// const cookieSession = require("cookie-session");
 const passport = require("passport");
 const Product = require("./model/productSchema");
 const User = require("./model/usersSchema");
 const cookieParser = require("cookie-parser");
-const { response } = require("express");
 const port = 8080;
 // _________________________END OF IMPORTS________________________
 
@@ -22,19 +23,21 @@ mongoose
     useUnifiedTopology: true,
     useFindAndModify: true,
   })
-  .then((res) => console.log("Mongoose Connected!✅"))
-  .catch((err) => console.log("Its error from db"));
+  .then(() => console.log("Mongoose Connected!✅"))
+  .catch(() => console.log("Its error from DB!"));
 // _________________________END OF DB LOGIC________________________
 
 // Middlewares
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(express.json());
+
 app.use(
   cors({
     origin: "http://localhost:3000",
     credentials: true,
   })
 );
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -50,11 +53,10 @@ require("./passport-config")(passport);
 // ________________________MIDDLEWARES END________________________
 
 // Response Messages
-
 const resMessages = {
   err: "ERR - Something Went Wrong❌",
   loginSuccess: "Successfully Authenticated✅",
-  userExist: "Username already exist!",
+  userExist: "Email already exist!",
   accountCreated: "Account Created Successfully!✅",
   addedToCart: "1 Item added to Cart ✅",
   productCreated: "Product Created Successfully!✅",
@@ -78,10 +80,10 @@ app.post("/login", (req, res, next) => {
       req.logIn(user, (err) => {
         if (err) res.json({ message: resMessages.err });
         else {
-          const { username, cart, email, full_name } = req.user;
+          const { cart, email, full_name } = req.user;
           res.send({
             message: resMessages.loginSuccess,
-            data: { username, cart, email, full_name },
+            data: { cart, email, full_name },
           });
         }
       });
@@ -113,10 +115,10 @@ app.get("/product-detail/:id", (req, res) => {
 });
 
 app.post("/user/create", async (req, res) => {
-  const { username, password } = req.body;
-  User.find({ username }, async (err, doc) => {
+  const { email, password } = req.body;
+  User.find({ email }, async (err, doc) => {
     if (err) res.json({ message: resMessages.err });
-    if (doc) res.json({ message: resMessages.userExist });
+    if (doc.length !== 0) res.json({ message: resMessages.userExist });
     else {
       const hashedPassword = await bcrypt.hash(password, 10);
       req.body.password = hashedPassword;
@@ -133,14 +135,14 @@ app.post("/cart/modify", (req, res) => {
   if (!req.user) {
     return res.json({ message: resMessages.unauthorized });
   } else {
-    const { username } = req.user;
+    const { email } = req.user;
 
     if (type === "ADD") {
       // Check if product exixt in the cart or not
-      User.findOne({ username, "cart._id": data._id }, (err, doc) => {
+      User.findOne({ email, "cart._id": data._id }, (err, doc) => {
         if (err) return res.send("err");
         if (doc === null) {
-          User.updateOne({ username }, { $push: { cart: data } })
+          User.updateOne({ email }, { $push: { cart: data } })
             .then(() => res.send({ message: resMessages.addedToCart }))
             .catch((err) => console.log(err));
         } else {
@@ -148,7 +150,7 @@ app.post("/cart/modify", (req, res) => {
         }
       });
     } else {
-      User.updateOne({ username }, { $pull: { cart: { _id: data._id } } })
+      User.updateOne({ email }, { $pull: { cart: { _id: data._id } } })
         .then(() => res.send({ message: resMessages.itemRemoved }))
         .catch((err) => console.log(err));
     }
@@ -159,7 +161,7 @@ app.post("/cart/item/modify", (req, res) => {
   const { type, data } = req.body;
   if (!req.user) return res.send({ message: resMessages.unauthorized });
   else {
-    const { username } = req.user;
+    const { email } = req.user;
 
     let updateQuantity = data.quantity;
 
@@ -170,7 +172,7 @@ app.post("/cart/item/modify", (req, res) => {
     } else return res.send({ message: resMessages.err });
 
     User.updateOne(
-      { username, "cart._id": data._id },
+      { email, "cart._id": data._id },
       { $set: { "cart.$.quantity": updateQuantity } }
     )
       .then(() => res.send({ message: resMessages.cartItemUpdated }))
@@ -188,13 +190,77 @@ app.get("/cart-items", (req, res) => {
 
 app.get("/data", (req, res) => {
   if (req.user) {
-    const { username, full_name, email } = req.user;
+    const { full_name, email } = req.user;
     res.json({
       message: resMessages.loginSuccess,
-      data: { username, full_name, email },
+      data: { full_name, email },
     });
   } else res.json({ message: resMessages.unauthorized });
 });
+
+// _____________________ STRIPE CHECKOUT SESSION ROUTE _______________________
+
+app.get("/create-checkout", async (req, res) => {
+  if (!req.user) return res.json({ message: resMessages.unauthorized });
+  try {
+    let { cart } = req.user;
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      line_items: cart.map((item) => {
+        return {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: item.name,
+            },
+            unit_amount: item.price * 100,
+          },
+          quantity: item.quantity,
+        };
+      }),
+      success_url: `${process.env.CLIENT_URL}/payment-success`,
+      cancel_url: `${process.env.CLIENT_URL}/cart`,
+    });
+
+    res.json({ url: session.url });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: resMessages.err });
+  }
+});
+
+app.post(
+  "/webhook",
+  bodyParser.raw({ type: "application/json" }),
+  (request, response) => {
+    const event = request.body;
+
+    // Handle the event
+    switch (event.type) {
+      case "payment_intent.succeeded":
+        const paymentIntent = event.data.object;
+        const { email } = paymentIntent.charges.data[0].billing_details;
+
+        User.updateOne({ email }, { $set: { cart: [] } }, (err) => {
+          if (err) console.log(err);
+          response.end();
+        });
+
+        break;
+      case "payment_method.attached":
+        console.log("PaymentMethod was attached to a Customer!");
+        break;
+
+      default:
+        console.log(`Unhandled event type ${event.type}`);
+    }
+
+    response.json({ received: true });
+  }
+);
+
+// _____________________ CHECKOUT SESSION ROUTE END _______________________
 
 // _____________________ NOT SO IMP ROUTES ________________________
 app.post("/product/add", (req, res) => {
