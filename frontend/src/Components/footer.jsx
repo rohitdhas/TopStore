@@ -11,4 +11,9 @@ const Bar = styled.footer`
   color: white;
   font-size: 1.1rem;
   font-weight: bold;
+
+  @media (max-width: 750px) {
+    font-size: 0.8rem;
+    padding: 15px 20px;
+  }
 `;

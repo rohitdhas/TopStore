@@ -1,14 +1,13 @@
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
-import styled from "styled-components";
+import { Nav, NavLinks, NavItemsMobile, SideBarBox } from "../Styles/navStyles";
 
 export default function Navbar({ notify }) {
   const userInput = useRef("");
   const history = useHistory();
   const [userData, setUserData] = useState({});
 
-  const herokuDeploy = "https://still-earth-12280.herokuapp.com/";
   const localhost = "http://localhost:8080/";
 
   useEffect(() => {
@@ -53,7 +52,9 @@ export default function Navbar({ notify }) {
 
   function displayProfileOptions() {
     const dropdown = document.querySelector("#profile_dropdown ul");
+    const overlay = document.querySelector("#profile_dropdown .overlay");
     dropdown.classList.toggle("active");
+    overlay.classList.toggle("active");
   }
 
   return (
@@ -61,7 +62,7 @@ export default function Navbar({ notify }) {
       <div className="logo">
         <Link to="/">TopStore</Link>
       </div>
-      <div className="nav_items">
+      <div>
         <form onSubmit={searchProducts}>
           <input
             type="text"
@@ -75,16 +76,19 @@ export default function Navbar({ notify }) {
           </button>
         </form>
       </div>
-      <div className="navlinks">
+      <NavLinks className="navlinks">
         <span className="user_avatar">
           {!userData.full_name ? (
-            <a href="/login">Login/SignUp</a>
+            <Link to="/login">
+              <button id="login_btn">Login/Sign Up</button>
+            </Link>
           ) : (
             <span id="profile_dropdown">
               <i
                 onClick={displayProfileOptions}
                 className="fas fa-user-circle"
               ></i>
+              <div className="overlay" onClick={displayProfileOptions}></div>
               <ul>
                 <li>
                   <img
@@ -109,145 +113,87 @@ export default function Navbar({ notify }) {
             <i className="fas fa-shopping-cart"></i>
           </Link>
         </span>
-      </div>
+      </NavLinks>
+      <NavItemsForMobile />
     </Nav>
   );
 }
 
-const Nav = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: black;
-  padding: 7px 40px;
+const NavItemsForMobile = () => {
+  return (
+    <NavItemsMobile>
+      <Link to="/mobile/search">
+        <i className="fas fa-search"></i>
+      </Link>
+      <Link to="/cart">
+        <i className="fas fa-shopping-cart"></i>
+      </Link>
+      <i onClick={toggleSidebar} class="fas fa-bars"></i>
+      <SideBar />
+    </NavItemsMobile>
+  );
+};
 
-  .logo a {
-    padding: 0;
-    font-size: 2rem;
-    font-weight: bold;
-    text-decoration: none;
-    color: black;
-  }
+const SideBar = () => {
+  const [username, setUsername] = useState("");
 
-  span {
-    margin: 0 10px;
-  }
+  const history = useHistory();
 
-  form {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    input {
-      font-size: 1.03rem;
-      border: 1px solid gray;
-      border-radius: 7px 0 0 7px;
-      display: inline-block;
-      padding: 5px 10px;
-      font-size: 17px;
-      transition: all 0.2s;
-    }
-    button {
-      display: inline-block;
-      padding: 6px 10px;
-      font-size: 17px;
-      outline: none;
-      cursor: pointer;
-      border: none;
-      border-radius: 0 7px 7px 0;
-      background-color: #1f1e1e;
-      color: white;
-
-      &:hover {
-        background-color: blueviolet;
-      }
-    }
-  }
-
-  .navlinks {
-    display: flex;
-    align-items: center;
-    position: relative;
-
-    a {
-      text-decoration: none;
-      color: black;
-
-      &:hover {
-        color: blueviolet;
-        text-decoration: underline;
-      }
-    }
-
-    i {
-      font-size: 2rem;
-      cursor: pointer;
-      color: #3b3b3b;
-
-      &:hover {
-        color: blueviolet;
-      }
-    }
-
-    #profile_dropdown {
-      ul.active {
-        display: block;
-      }
-
-      ul {
-        z-index: 10000;
-        display: none;
-        list-style: none;
-        border: 2px solid blueviolet;
-        border-radius: 7px;
-        position: absolute;
-        right: 40%;
-        margin-top: 15px;
-
-        &::after {
-          content: "";
-          position: absolute;
-          top: 0;
-          right: 20px;
-          background-color: blueviolet;
-          height: 30px;
-          width: 30px;
-          transform: translateY(-15px);
-          clip-path: polygon(50% 0, 100% 50%, 50% 50%, 0 50%);
+  useEffect(() => {
+    fetch("http://localhost:8080/data", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then(({ message, data }) => {
+        if (!data) {
+          console.log(message);
+        } else {
+          setUsername(data.full_name);
         }
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
-        img {
-          height: 40px;
-          width: 40px;
-          margin: 0 5px;
-          border-radius: 50%;
-        }
-        li {
-          display: flex;
-          align-items: center;
-          border-bottom: 2px solid blueviolet;
-          padding: 7px;
-          background-color: #892be281;
-          &:hover {
-            background-color: #5f12a7a3;
-            cursor: pointer;
-            color: white;
-          }
-        }
+  function fireLogout() {
+    let loader = document.getElementById("loader_overlay");
+    loader.classList.add("active");
 
-        li:last-child {
-          border-bottom: none;
-          i:hover {
-            color: white;
-          }
-        }
-      }
-    }
+    fetch("http://localhost:8080/logout", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then(() => {
+        setUsername("");
+        history.push("/");
+        toggleSidebar();
+        loader.classList.remove("active");
+      });
   }
 
-  @media (max-width: 850px) {
-    .navlinks {
-      display: none;
-    }
-  }
-`;
+  return (
+    <SideBarBox className="sidebar">
+      <div onClick={toggleSidebar} id="sidebar_overlay"></div>
+      <ul>
+        <li>Hello, {username || "User"}!</li>
+        {username ? (
+          <li onClick={fireLogout}>
+            <span>Logout</span>
+            <i class="fas fa-sign-out-alt"></i>
+          </li>
+        ) : (
+          <li>
+            <a href="/login">Login/Signup</a>
+          </li>
+        )}
+      </ul>
+    </SideBarBox>
+  );
+};
+
+function toggleSidebar() {
+  const overley = document.getElementById("sidebar_overlay");
+  const sidebar = document.querySelector(".sidebar ul");
+
+  overley.classList.toggle("active");
+  sidebar.classList.toggle("active");
+}

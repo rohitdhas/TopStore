@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import { MobileItem, Item } from "../Styles/cartItemStyles";
 
-export default function CartItem({ ItemData, notify, setCartItems }) {
+export default function CartItem({ ItemData, setCartItems }) {
   const { price, image, name, quantity, _id } = ItemData;
 
   function removeFromCart(productID) {
@@ -16,11 +16,9 @@ export default function CartItem({ ItemData, notify, setCartItems }) {
       },
     })
       .then((res) => res.json())
-      .then(({ message }) => {
-        notify(message);
+      .then(() => {
         loader.classList.remove("active");
         getCartData().then((data) => setCartItems(data));
-        notify(message);
       });
   }
 
@@ -45,87 +43,85 @@ export default function CartItem({ ItemData, notify, setCartItems }) {
   }
 
   return (
-    <Item className="cart_item">
-      <div className="cart_item_img">
-        <img src={image} alt="product_img" />
-      </div>
-      <div className="cart_item_main">
-        <span>{name}</span>
-        <div className="cart_item_modifier">
-          <div>
-            <button
-              onClick={() =>
-                modifyQuantity({
-                  type: "INCREMENT",
-                  data: { _id, quantity },
-                })
-              }
-            >
-              +
-            </button>
-            <span className="cart_item_count">{quantity}</span>
-            <button
-              onClick={() =>
-                modifyQuantity({
-                  type: "DECREMENT",
-                  data: { _id, quantity },
-                })
-              }
-            >
-              -
+    <>
+      <Item className="cart_item">
+        <div className="cart_item_img">
+          <img src={image} alt="product_img" />
+        </div>
+        <div className="cart_item_main">
+          <span>{name}</span>
+          <div className="cart_item_modifier">
+            <div>
+              <button
+                onClick={() =>
+                  modifyQuantity({
+                    type: "INCREMENT",
+                    data: { _id, quantity },
+                  })
+                }
+              >
+                +
+              </button>
+              <span className="cart_item_count">{quantity}</span>
+              <button
+                onClick={() =>
+                  modifyQuantity({
+                    type: "DECREMENT",
+                    data: { _id, quantity },
+                  })
+                }
+              >
+                -
+              </button>
+            </div>
+            <button className="rmv-btn" onClick={() => removeFromCart(_id)}>
+              Remove from Cart
             </button>
           </div>
+        </div>
+        <span>Price - ${price}</span>
+      </Item>
+
+      <MobileItem className="cart_item">
+        <div className="mobile_cart_item_detail">
+          <img src={image} alt="product_img" />
+          <span>
+            <p>
+              <strong>{name}</strong>
+            </p>
+            <p>Price - ${price}</p>
+          </span>
+        </div>
+        <div className="mobile_cart_item_modifier">
+          <button
+            onClick={() =>
+              modifyQuantity({
+                type: "INCREMENT",
+                data: { _id, quantity },
+              })
+            }
+          >
+            +
+          </button>
+          <span className="cart_item_count">{quantity}</span>
+          <button
+            onClick={() =>
+              modifyQuantity({
+                type: "DECREMENT",
+                data: { _id, quantity },
+              })
+            }
+          >
+            -
+          </button>
           <button className="rmv-btn" onClick={() => removeFromCart(_id)}>
-            Remove from Cart
+            Delete
           </button>
         </div>
-      </div>
-      <span>Price - ${price}</span>
-    </Item>
+      </MobileItem>
+    </>
   );
 }
-
-const Item = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  img {
-    height: 100px;
-    width: 100px;
-  }
-
-  .cart_item_main {
-    * {
-      margin: 5px 0;
-    }
-    span {
-      margin: 0 10px;
-    }
-
-    button {
-      padding: 7px 14px;
-      margin: 5px 0;
-      background-color: blueviolet;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-
-      &:hover {
-        background-color: #591797;
-      }
-    }
-
-    .rmv-btn {
-      background-color: tomato;
-
-      &:hover {
-        background-color: #c7371d;
-      }
-    }
-  }
-`;
 
 async function getCartData() {
   let res = await fetch("http://localhost:8080/cart-items", {

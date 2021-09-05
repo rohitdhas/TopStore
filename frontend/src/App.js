@@ -1,4 +1,4 @@
-import "./App.css";
+import "./Styles/App.css";
 import { useEffect, useState } from "react";
 import Login from "./Components/login";
 import Home from "./Components/home";
@@ -11,7 +11,10 @@ import Cart from "./Components/cart";
 import AddProduct from "./Components/addProduct";
 import Spinner from "./Components/spinner";
 import ResCard from "./Components/responseCard";
+import MobileSearchPage from "./Components/mobileSearchPage";
 import PaymentSuccess from "./Components/paymentSuccess";
+import Recommendations from "./Components/recommendations";
+// import PageNotFound from "./Components/404";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 function App() {
@@ -47,14 +50,17 @@ function App() {
         <Route exact path="/user/create">
           <CreateAc notify={setResMessage} />
         </Route>
+        <Route exact path="/mobile/search">
+          <MobileSearchPage notify={setResMessage} />
+        </Route>
         <div className="App">
           <Navbar notify={setResMessage} />
           <Route exact path="/">
-            <Home />
+            <Home notify={setResMessage} />
             <Footer />
           </Route>
-          <Route path="/cart">
-            <Cart notify={setResMessage} />
+          <Route exact path="/cart">
+            <Cart />
           </Route>
           <Route path="/product/:productID">
             <ProductDetails notify={setResMessage} />
@@ -64,6 +70,9 @@ function App() {
           </Route>
           <Route path="/payment-success">
             <PaymentSuccess />
+          </Route>
+          <Route path="/recommended">
+            <Recommendations />
           </Route>
           {/* ----------------Not So IMP Routes---------------- */}
           <Route path="/create-product">

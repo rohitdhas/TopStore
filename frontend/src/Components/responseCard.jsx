@@ -1,5 +1,4 @@
 import styled from "styled-components";
-// import { useState } from "react";
 
 export default function ResCard({ message }) {
   return (
@@ -19,6 +18,7 @@ const Box = styled.ul`
   left: 50%;
   transform: translateX(-50%);
   flex-direction: column;
+  z-index: 100;
 
   li {
     list-style: none;
@@ -35,12 +35,15 @@ const Card = styled.li`
   margin: 10px auto;
   color: white;
   border-radius: 5px;
-  z-index: 100;
   transform: translateY(70px);
   transition: all 0.2s ease-in-out;
 
   &.active {
     opacity: 1;
     transform: translateY(-20px);
+  }
+
+  @media (max-width: 500px) {
+    font-size: 0.8rem;
   }
 `;

@@ -3,35 +3,13 @@ Content-Type: application/json
 
 
 {
-    "username": "rohitdhas666@gmail.com",
+    "username": "rohitdhas@gmail.com",
     "password": "tihor"
 }
 
 ###
 
-POST http://localhost:8080/cart/modify
-Content-Type: application/json
-
-{
-    "type": "RM",
-    "data": {
-        "_id": "sdafj324",
-        "name": "tsadfest",
-        "quantity": 2   
-    }
-}
-
-###
-POST http://localhost:8080/cart/item/modify
-Content-Type: application/json
-
-{
-    "type": "INCREMENT",
-    "data": {
-        "_id": "sdafj324",
-        "quantity": 2
-    }
-}
+GET http://localhost:8080/products/random
 
 ###
 

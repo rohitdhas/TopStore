@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 import CartItem from "./cartItem";
+import CartSections from "../Styles/cartStyles";
 
-export default function Cart({ notify }) {
+export default function Cart() {
   let cartTotal = 0;
   // __________________________HOOKS START___________________________________
   const [cartItems, setCartItems] = useState([]);
@@ -58,7 +58,6 @@ export default function Cart({ notify }) {
                 <CartItem
                   key={_id}
                   ItemData={item}
-                  notify={notify}
                   setCartItems={setCartItems}
                 />
               );
@@ -72,7 +71,6 @@ export default function Cart({ notify }) {
             </p>
           </div>
         </div>
-
         <div className="checkout_card">
           <h3>Pack everything Up</h3>
           <div>
@@ -86,6 +84,11 @@ export default function Cart({ notify }) {
           </button>
         </div>
       </div>
+      <div className="mobile-checkout">
+        <button onClick={checkout}>
+          Proceed to Buy ({cartItems.length} Items)
+        </button>
+      </div>
     </CartSections>
   );
 }
@@ -97,60 +100,3 @@ async function getCartData() {
   let data = await res.json();
   return data;
 }
-
-const CartSections = styled.div`
-  height: 90vh;
-  margin: 0 40px;
-  text-align: center;
-
-  h1 {
-    margin: 10px 0;
-    text-decoration: underline;
-  }
-
-  .cart_page_sections {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .checkout_card {
-    position: fixed;
-    top: 20%;
-    right: 40px;
-    border: 2px solid black;
-    border-radius: 5px;
-    padding: 10px;
-
-    * {
-      margin: 7px 0;
-    }
-  }
-
-  .cart_item {
-    width: 600px;
-    max-width: auto;
-    margin: 10px;
-    padding: 10px 15px;
-    /* border-radius: 5px; */
-    border-bottom: 2px solid grey;
-  }
-
-  .cart_total {
-    text-align: end;
-  }
-
-  #checkout-btn {
-    padding: 7px 14px;
-    margin: 5px 0;
-    background-color: #2ab408;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-
-    &:hover {
-      background-color: #50df2c;
-    }
-  }
-`;

@@ -84,6 +84,7 @@ export default function AddProduct() {
             <option value="clothings">Clothings</option>
             <option value="accessories">Accessories</option>
             <option value="groceries">Groceries</option>
+            <option value="books">Book</option>
           </select>
         </div>
         <button type="submit">Add Product</button>
