@@ -54,6 +54,9 @@ const Box = styled.div`
         color: white;
       }
     }
+    a:hover {
+      color: blue;
+    }
   }
 `;
 

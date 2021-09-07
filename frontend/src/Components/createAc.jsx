@@ -46,7 +46,11 @@ export default function CreateAc({ notify }) {
       if (!input.current.value) return;
     });
 
-    if (passwordRef.current.value !== password_againRef.current.value) return;
+    if (passwordRef.current.value !== password_againRef.current.value) {
+      loader.classList.remove("active");
+      notify("Passwords don't Match!❌");
+      return;
+    }
 
     const userData = {
       full_name: fullNameRef.current.value,
@@ -78,24 +82,36 @@ export default function CreateAc({ notify }) {
       <form onSubmit={handleAccountCreation}>
         <div>
           <label htmlFor="name">Name</label>
-          <input type="text" ref={fullNameRef} />
+          <input type="text" ref={fullNameRef} required />
         </div>
         <div>
           <label htmlFor="email">Email</label>
-          <input type="email" ref={emailRef} />
+          <input type="email" ref={emailRef} required />
         </div>
         <div>
           <label htmlFor="password">Password</label>
-          <input type="password" ref={passwordRef} />
+          <input
+            type="password"
+            ref={passwordRef}
+            required
+            minLength={5}
+            maxLength={10}
+          />
         </div>
         <div>
           <label htmlFor="password_again">Retype Password</label>
-          <input type="password" ref={password_againRef} />
+          <input
+            type="password"
+            ref={password_againRef}
+            required
+            minLength={5}
+            maxLength={10}
+          />
         </div>
         <button type="submit">Create Account</button>
-        <h3>
-          <a href="/login">Click Here</a> To Log in
-        </h3>
+        <p>
+          <a href="/login">Click Here</a> to Log in
+        </p>
       </form>
     </Form>
   );

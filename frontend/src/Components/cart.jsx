@@ -4,7 +4,6 @@ import CartSections from "../Styles/cartStyles";
 
 export default function Cart() {
   let cartTotal = 0;
-  // __________________________HOOKS START___________________________________
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
@@ -20,7 +19,6 @@ export default function Cart() {
       loader.classList.remove("active");
     });
   }, []);
-  // __________________________END OF HOOKS___________________________________
 
   function checkout() {
     if (cartItems.length === 0) return;
@@ -42,8 +40,7 @@ export default function Cart() {
   }
 
   return (
-    // __________________________JSX___________________________________
-    <CartSections>
+    <CartSections className="cart">
       <h1>Your Cart🎈</h1>
       <div className="cart_page_sections">
         <div className="cart_items_section">

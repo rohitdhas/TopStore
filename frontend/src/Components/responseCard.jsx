@@ -3,7 +3,7 @@ import styled from "styled-components";
 export default function ResCard({ message }) {
   return (
     <Box>
-      <Card className="card">
+      <Card id="card">
         <p>{message}</p>
       </Card>
     </Box>

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const HomePage = styled.div`
-  margin: 0 40px;
+  margin: 60px 40px 0 40px;
 
   .home {
     display: flex;
@@ -56,7 +56,7 @@ export const HomePage = styled.div`
     }
   }
   @media (max-width: 750px) {
-    margin: 0 20px;
+    margin: 60px 20px 0 20px;
 
     .home .home_img {
       display: none;

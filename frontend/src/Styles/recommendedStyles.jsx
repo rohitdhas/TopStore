@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const RecommendationPage = styled.div`
-  margin: 0 40px 25px 40px;
+  margin: 60px 40px 25px 40px;
 
   header {
     font-size: 1.4rem;
@@ -53,7 +53,7 @@ const RecommendationPage = styled.div`
     }
   }
   @media (max-width: 750px) {
-    margin: 0 20px 10px 20px;
+    margin: 60px 20px 10px 20px;
 
     .grid_box {
       grid-template-columns: repeat(1, 1fr);

@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 export default function PageNotFound() {
   return (
-    <Box>
-      <h1>404 Error</h1>
+    <Box id="not_found_page">
+      <h1>404 ERROR</h1>
       <p>Sorry, The Page you are trying to access is unavailable!</p>
     </Box>
   );

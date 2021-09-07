@@ -8,7 +8,7 @@ module.exports = (passport) => {
       User.findOne({ email }, (err, user) => {
         if (err) throw err;
         if (!user)
-          return done(null, false, { message: "User Doesn't Exist❌" });
+          return done(null, false, { message: "Incorrect Username❌" });
         bcrypt.compare(password, user.password, (err, res) => {
           if (err) throw err;
           if (res) {

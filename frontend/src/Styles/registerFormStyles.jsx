@@ -48,6 +48,14 @@ const Form = styled.div`
       background-color: white;
       font-size: 1.1rem;
       border-radius: 5px;
+
+      &:hover {
+        background-color: blueviolet;
+        color: white;
+      }
+    }
+    a:hover {
+      color: blue;
     }
   }
 `;

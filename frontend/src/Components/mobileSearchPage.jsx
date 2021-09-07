@@ -1,10 +1,14 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 
 export default function MobileSearchPage() {
   const userInput = useRef("");
   const history = useHistory();
+
+  useEffect(() => {
+    userInput.current.focus();
+  }, []);
 
   function searchProducts(e) {
     const { value } = userInput.current;
@@ -20,7 +24,7 @@ export default function MobileSearchPage() {
       <form onSubmit={searchProducts}>
         <i
           onClick={() => history.goBack()}
-          class="fas fa-arrow-circle-left"
+          className="fas fa-arrow-circle-left"
         ></i>
         <input type="text" ref={userInput} placeholder="Search for Products" />
       </form>

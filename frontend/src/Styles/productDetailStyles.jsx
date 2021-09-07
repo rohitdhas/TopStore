@@ -5,7 +5,7 @@ const Details = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  margin: 0 40px;
+  margin: 60px 40px 0 40px;
 
   img {
     height: 400px;
@@ -54,7 +54,7 @@ const Details = styled.div`
   }
 
   @media (max-width: 650px) {
-    margin: 0 20px;
+    margin: 60px 20px 0 20px;
     flex-direction: column;
     height: 90vh;
 

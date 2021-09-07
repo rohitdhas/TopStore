@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const CartSections = styled.div`
   height: 90vh;
-  margin: 0 40px;
+  margin: 60px 40px 0 40px;
   text-align: center;
 
   h1 {
@@ -59,7 +59,7 @@ const CartSections = styled.div`
   }
 
   @media (max-width: 1140px) {
-    margin: 0 20px;
+    margin: 60px 20px 0 20px;
 
     .checkout_card {
       display: none;

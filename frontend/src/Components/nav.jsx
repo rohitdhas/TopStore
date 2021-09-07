@@ -8,17 +8,13 @@ export default function Navbar({ notify }) {
   const history = useHistory();
   const [userData, setUserData] = useState({});
 
-  const localhost = "http://localhost:8080/";
-
   useEffect(() => {
-    fetch(localhost + "data", {
+    fetch("http://localhost:8080/data", {
       credentials: "include",
     })
       .then((res) => res.json())
-      .then(({ message, data }) => {
-        if (!data) {
-          console.log(message);
-        } else {
+      .then(({ data }) => {
+        if (data) {
           setUserData(data);
         }
       })
@@ -102,7 +98,7 @@ export default function Navbar({ notify }) {
                 </li>
                 <li onClick={fireLogout}>
                   <span>Sign Out</span>
-                  <i class="fas fa-sign-out-alt"></i>
+                  <i className="fas fa-sign-out-alt"></i>
                 </li>
               </ul>
             </span>
@@ -128,7 +124,7 @@ const NavItemsForMobile = () => {
       <Link to="/cart">
         <i className="fas fa-shopping-cart"></i>
       </Link>
-      <i onClick={toggleSidebar} class="fas fa-bars"></i>
+      <i onClick={toggleSidebar} className="fas fa-bars"></i>
       <SideBar />
     </NavItemsMobile>
   );
@@ -178,7 +174,7 @@ const SideBar = () => {
         {username ? (
           <li onClick={fireLogout}>
             <span>Logout</span>
-            <i class="fas fa-sign-out-alt"></i>
+            <i className="fas fa-sign-out-alt"></i>
           </li>
         ) : (
           <li>

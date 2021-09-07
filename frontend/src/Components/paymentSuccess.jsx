@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export default function PaymentSuccess() {
   return (
-    <Box>
+    <Box id="payment-success-page">
       <p>Thanks for shopping with TopStore!🎉</p>
     </Box>
   );

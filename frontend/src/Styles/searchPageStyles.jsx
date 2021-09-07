@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const SearchPageBox = styled.div`
-  margin: 0 40px;
+  margin: 60px 40px 0 40px;
 
   & > p {
     font-size: 1.2rem;
@@ -13,7 +13,7 @@ export const SearchPageBox = styled.div`
   }
 
   @media (max-width: 500px) {
-    margin: 0 20px;
+    margin: 60px 20px 0 20px;
 
     & > p {
       font-size: 0.9rem;

@@ -1,5 +1,5 @@
 import "./Styles/App.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Login from "./Components/login";
 import Home from "./Components/home";
 import CreateAc from "./Components/createAc";
@@ -14,29 +14,25 @@ import ResCard from "./Components/responseCard";
 import MobileSearchPage from "./Components/mobileSearchPage";
 import PaymentSuccess from "./Components/paymentSuccess";
 import Recommendations from "./Components/recommendations";
-// import PageNotFound from "./Components/404";
+import PageNotFound from "./Components/404";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 function App() {
   const [resMessage, setResMessage] = useState("");
-  let notificationTimeout;
+  let notificationTimeout = useRef();
 
   useEffect(() => {
-    clearTimeout(notificationTimeout);
     if (resMessage === "") return;
 
-    let cards = document.querySelectorAll(".card");
-
-    cards.forEach((card) => {
-      card.classList.add("active");
-    });
+    let card = document.getElementById("card");
+    card.classList.add("active");
 
     notificationTimeout = setTimeout(() => {
-      cards.forEach((card) => {
-        card.classList.remove("active");
-      });
+      card.classList.remove("active");
       setResMessage("");
     }, 2500);
+    
+    return clearTimeout(notificationTimeout);
   }, [resMessage]);
 
   return (
@@ -44,6 +40,7 @@ function App() {
       <ResCard message={resMessage} />
       <Spinner />
       <Switch>
+        {/* Routes Without Nav Start */}
         <Route exact path="/login">
           <Login notify={setResMessage} />
         </Route>
@@ -53,32 +50,38 @@ function App() {
         <Route exact path="/mobile/search">
           <MobileSearchPage notify={setResMessage} />
         </Route>
-        <div className="App">
+        {/* Routes Without Nav End */}
+        <Route exact path="/">
           <Navbar notify={setResMessage} />
-          <Route exact path="/">
-            <Home notify={setResMessage} />
-            <Footer />
-          </Route>
-          <Route exact path="/cart">
-            <Cart />
-          </Route>
-          <Route path="/product/:productID">
-            <ProductDetails notify={setResMessage} />
-          </Route>
-          <Route path="/search/:product">
-            <SearchPage notify={setResMessage} />
-          </Route>
-          <Route path="/payment-success">
-            <PaymentSuccess />
-          </Route>
-          <Route path="/recommended">
-            <Recommendations />
-          </Route>
-          {/* ----------------Not So IMP Routes---------------- */}
-          <Route path="/create-product">
-            <AddProduct />
-          </Route>
-        </div>
+          <Home notify={setResMessage} />
+          <Footer />
+        </Route>
+        <Route exact path="/cart">
+          <Navbar notify={setResMessage} />
+          <Cart />
+        </Route>
+        <Route exact path="/product/:productID">
+          <Navbar notify={setResMessage} />
+          <ProductDetails notify={setResMessage} />
+        </Route>
+        <Route exact path="/search/:product">
+          <Navbar notify={setResMessage} />
+          <SearchPage notify={setResMessage} />
+        </Route>
+        <Route exact path="/payment-success">
+          <Navbar notify={setResMessage} />
+          <PaymentSuccess />
+        </Route>
+        <Route exact path="/recommended">
+          <Navbar notify={setResMessage} />
+          <Recommendations />
+        </Route>
+        {/* ----------------Not So IMP Routes---------------- */}
+        <Route exact path="/create-product" component={AddProduct} />
+        <Route>
+          <Navbar notify={setResMessage} />
+          <PageNotFound />
+        </Route>
       </Switch>
     </Router>
   );

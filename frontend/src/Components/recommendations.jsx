@@ -19,14 +19,14 @@ export default function Recommendations() {
   }, []);
 
   return (
-    <RecommendationPage>
+    <RecommendationPage id="recommended_page">
       <header>TopStore Recommendations!</header>
       <div className="grid_box">
         {products.length === 0
           ? null
           : products.map((item) => {
               return (
-                <div className="grid_item">
+                <div key={item._id} className="grid_item">
                   <img src={item.image} alt="product_img" />
                   <p className="item_name">{item.name}</p>
                   <p className="item_price">Price - ${item.price}</p>
