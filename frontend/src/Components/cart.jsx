@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import CartItem from "./cartItem";
-import CartSections from "../Styles/cartStyles";
+import CartSections, { AddressForm } from "../Styles/cartStyles";
+import { CheckoutCard, MobileCheckoutBtn } from "./checkoutCard";
 
 export default function Cart() {
   let cartTotal = 0;
   const [cartItems, setCartItems] = useState([]);
+  const userAddress = useRef("");
+  const userMobile = useRef();
 
   useEffect(() => {
     let loader = document.getElementById("loader_overlay");
@@ -20,11 +23,24 @@ export default function Cart() {
     });
   }, []);
 
-  function checkout() {
+  function checkout(e) {
+    e.preventDefault();
     if (cartItems.length === 0) return;
 
     let loader = document.getElementById("loader_overlay");
     loader.classList.add("active");
+
+    fetch("http://localhost:8080/place-order", {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        address: userAddress.current.value,
+        mobile: userMobile.current.value,
+      }),
+    });
 
     fetch("http://localhost:8080/create-checkout", {
       credentials: "include",
@@ -37,6 +53,18 @@ export default function Cart() {
         loader.classList.remove("active");
       })
       .catch((err) => console.log(err));
+  }
+
+  function toggleAddressForm(e) {
+    e.preventDefault();
+    if (cartItems.length === 0) return;
+
+    const overlay = document.getElementById("address_form_overlay");
+    const form = document.querySelector(".address_form form");
+    userAddress.current.focus();
+
+    overlay.classList.toggle("active");
+    form.classList.toggle("active");
   }
 
   return (
@@ -69,23 +97,48 @@ export default function Cart() {
           </div>
         </div>
         <div className="checkout_card">
-          <h3>Pack everything Up</h3>
-          <div>
-            <p>Total ({cartItems.length} items)</p>
-            <p>
-              <strong>${cartTotal}/-</strong>
-            </p>
-          </div>
-          <button id="checkout-btn" onClick={checkout}>
-            Proceed to Checkout
-          </button>
+          <CheckoutCard
+            cartItemsLength={cartItems.length}
+            cartTotal={cartTotal}
+            checkout={toggleAddressForm}
+          />
         </div>
       </div>
       <div className="mobile-checkout">
-        <button onClick={checkout}>
-          Proceed to Buy ({cartItems.length} Items)
-        </button>
+        <MobileCheckoutBtn
+          checkout={toggleAddressForm}
+          cartItemsLength={cartItems.length}
+        />
       </div>
+      <AddressForm className="address_form">
+        <div id="address_form_overlay" onClick={toggleAddressForm}></div>
+        <form onSubmit={checkout}>
+          <p className="form_title">Enter your Address before proceeding!🙂</p>
+          <textarea
+            name="address"
+            id="delivery_address"
+            cols="30"
+            rows="10"
+            placeholder="Your Full Address"
+            ref={userAddress}
+            required
+          ></textarea>
+          <input
+            type="number"
+            id="phone_number"
+            placeholder="Your Mobile Number"
+            maxLength={10}
+            minLength={10}
+            required
+            ref={userMobile}
+          />
+          <p>
+            <b>NOTE👉🏻</b> - Enter your correct address with Pin Code. Your order
+            will not be processed if address isn't valid!
+          </p>
+          <button type="submit">Deliver to this Address</button>
+        </form>
+      </AddressForm>
     </CartSections>
   );
 }

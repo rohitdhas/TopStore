@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const resMessages = require("./responseMessages");
 const User = require("../model/usersSchema");
+const Order = require("../model/orderSchema");
 
 router.post("/cart/modify", (req, res) => {
   const { type, data } = req.body;
@@ -58,6 +59,23 @@ router.get("/cart-items", (req, res) => {
   else {
     const { cart } = req.user;
     res.json(cart);
+  }
+});
+
+router.post("/place-order", (req, res) => {
+  if (!req.user) res.json({ message: resMessages.err });
+  else {
+    const { address, mobile } = req.body;
+    const { cart, email, full_name } = req.user;
+    const newOrder = new Order({
+      cartItems: cart,
+      address,
+      email,
+      full_name,
+      mobile,
+    });
+    newOrder.save();
+    res.end();
   }
 });
 

@@ -22,6 +22,8 @@ function App() {
   let notificationTimeout = useRef();
 
   useEffect(() => {
+    clearTimeout(notificationTimeout);
+
     if (resMessage === "") return;
 
     let card = document.getElementById("card");
@@ -31,8 +33,6 @@ function App() {
       card.classList.remove("active");
       setResMessage("");
     }, 2500);
-    
-    return clearTimeout(notificationTimeout);
   }, [resMessage]);
 
   return (

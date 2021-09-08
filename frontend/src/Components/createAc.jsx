@@ -68,10 +68,12 @@ export default function CreateAc({ notify }) {
       credentials: "include",
     })
       .then((res) => res.json())
-      .then(({ message }) => {
+      .then(({ message, status }) => {
         loader.classList.remove("active");
-        history.push("/login");
         notify(message);
+        if (status === "success") {
+          history.push("/login");
+        }
       })
       .catch((err) => console.log(err));
   }

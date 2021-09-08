@@ -107,4 +107,90 @@ const CartSections = styled.div`
   }
 `;
 
+export const AddressForm = styled.div`
+  #address_form_overlay {
+    transform: scale(0);
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: #0a0a0ab5;
+    z-index: 100;
+    transition: all 0.3s ease-in;
+
+    &.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  form {
+    position: fixed;
+    left: 50%;
+    top: 25%;
+    transform: translateX(-50%) scale(0);
+    background-color: white;
+    padding: 10px;
+    width: 300px;
+    border-radius: 10px;
+    z-index: 200;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease-in;
+
+    .form_title {
+      color: black;
+      font-size: 1.1rem;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    textarea,
+    input {
+      font-size: 1.03rem;
+      border: 1px solid gray;
+      border-radius: 7px;
+      display: inline-block;
+      padding: 6px 10px;
+      font-size: 17px;
+      max-width: 100%;
+      margin: 5px 0;
+    }
+    input {
+      width: 100%;
+    }
+    button {
+      display: inline-block;
+      padding: 6px 10px;
+      font-size: 17px;
+      outline: none;
+      cursor: pointer;
+      border: none;
+      border-radius: 7px;
+      background-color: #1f1e1e;
+      color: white;
+      width: 100%;
+      margin-top: 10px;
+
+      &:hover {
+        background-color: blueviolet;
+      }
+    }
+
+    p {
+      color: tomato;
+      text-align: start;
+      font-size: 0.8rem;
+    }
+
+    &.active {
+      transform: translateX(-50%) scale(1);
+    }
+  }
+`;
+
 export default CartSections;

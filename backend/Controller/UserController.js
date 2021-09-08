@@ -44,7 +44,9 @@ router.post("/user/create", async (req, res) => {
       req.body.password = hashedPassword;
       const user = new User(req.body);
       user.save();
-      res.status(201).json({ message: resMessages.accountCreated });
+      res
+        .status(201)
+        .json({ message: resMessages.accountCreated, status: "success" });
     }
   });
 });

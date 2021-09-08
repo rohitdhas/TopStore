@@ -68,7 +68,7 @@ export default function SearchPage({ notify }) {
                   <img className="card_img" src={image} alt="product-img" />
                   <div>
                     <p className="search_p_p_name">{name}</p>
-                    <p className="search_p_p_price">Price - ${price}/-</p>
+                    <p className="search_p_p_price">Price - ${price}</p>
                     <Link to={`/product/${_id}`}>
                       <button>View Product</button>
                     </Link>

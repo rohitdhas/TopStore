@@ -9,6 +9,7 @@ export default function PaymentSuccess() {
 }
 
 const Box = styled.div`
+  margin: 60px 0 0;
   display: flex;
   justify-content: center;
   align-items: center;
