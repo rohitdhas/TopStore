@@ -1,12 +1,20 @@
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
-import { Nav, NavLinks, NavItemsMobile, SideBarBox } from "../Styles/navStyles";
+import { Nav, NavLinks } from "../Styles/navStyles";
+import AutocompleteBar, {
+  openAutocompleteBar,
+  closeAutocompleteBar,
+  filterTags,
+} from "./autocompleteBar";
+import { startSpinner, closeSpinner } from "./spinner";
+import NavItemsForMobile from "./mobileNav";
 
 export default function Navbar({ notify }) {
-  const userInput = useRef("");
+  const [userInput, setUserInput] = useState("");
   const history = useHistory();
   const [userData, setUserData] = useState({});
+  const [autoCompleteTags, setAutoCTags] = useState([]);
 
   useEffect(() => {
     fetch("http://localhost:8080/data", {
@@ -21,42 +29,53 @@ export default function Navbar({ notify }) {
       .catch((err) => console.log(err));
   }, []);
 
-  function fireLogout() {
-    let loader = document.getElementById("loader_overlay");
-    loader.classList.add("active");
+  useEffect(() => {
+    if (!userInput) {
+      closeAutocompleteBar();
+      return;
+    }
+    fetch(`http://localhost:8080/search?term=${userInput}`)
+      .then((res) => res.json())
+      .then(({ data, message }) => {
+        if (message) {
+          console.log(message);
+          return;
+        }
+        setAutoCTags(filterTags(data));
+        openAutocompleteBar();
+      })
+      .catch((err) => console.log(err));
+  }, [userInput]);
 
+  function fireLogout() {
+    startSpinner();
     fetch("http://localhost:8080/logout", {
       credentials: "include",
     })
       .then((res) => res.json())
       .then(({ message }) => {
         setUserData({});
-        notify(message);
         history.push("/");
-        loader.classList.remove("active");
+        closeSpinner();
+        notify(message);
       });
   }
 
   function searchProducts(e) {
-    const { value } = userInput.current;
     e.preventDefault();
-    if (!value) return;
 
+    if (!userInput) return;
     history.replace("/");
-    history.push(`search/${value}`);
-  }
-
-  function displayProfileOptions() {
-    const dropdown = document.querySelector("#profile_dropdown ul");
-    const overlay = document.querySelector("#profile_dropdown .overlay");
-    dropdown.classList.toggle("active");
-    overlay.classList.toggle("active");
+    history.push(`search/${userInput}`);
+    closeAutocompleteBar();
   }
 
   return (
     <Nav>
       <div className="logo">
-        <Link to="/">TopStore</Link>
+        <Link to="/">
+          <span>top</span>Store
+        </Link>
       </div>
       <div>
         <form onSubmit={searchProducts}>
@@ -64,13 +83,14 @@ export default function Navbar({ notify }) {
             type="text"
             placeholder="Search for Products"
             id="product_search_bar"
-            ref={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
             autoComplete="off"
           />
           <button type="submit">
             <i className="fas fa-search"></i>
           </button>
         </form>
+        <AutocompleteBar tagsArray={autoCompleteTags} />
       </div>
       <NavLinks className="navlinks">
         <span className="user_avatar">
@@ -115,81 +135,9 @@ export default function Navbar({ notify }) {
   );
 }
 
-const NavItemsForMobile = () => {
-  return (
-    <NavItemsMobile>
-      <Link to="/mobile/search">
-        <i className="fas fa-search"></i>
-      </Link>
-      <Link to="/cart">
-        <i className="fas fa-shopping-cart"></i>
-      </Link>
-      <i onClick={toggleSidebar} className="fas fa-bars"></i>
-      <SideBar />
-    </NavItemsMobile>
-  );
-};
-
-const SideBar = () => {
-  const [username, setUsername] = useState("");
-
-  const history = useHistory();
-
-  useEffect(() => {
-    fetch("http://localhost:8080/data", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then(({ message, data }) => {
-        if (!data) {
-          console.log(message);
-        } else {
-          setUsername(data.full_name);
-        }
-      })
-      .catch((err) => console.log(err));
-  }, []);
-
-  function fireLogout() {
-    let loader = document.getElementById("loader_overlay");
-    loader.classList.add("active");
-
-    fetch("http://localhost:8080/logout", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then(() => {
-        setUsername("");
-        history.push("/");
-        toggleSidebar();
-        loader.classList.remove("active");
-      });
-  }
-
-  return (
-    <SideBarBox className="sidebar">
-      <div onClick={toggleSidebar} id="sidebar_overlay"></div>
-      <ul>
-        <li>Hello, {username || "User"}!</li>
-        {username ? (
-          <li onClick={fireLogout}>
-            <span>Logout</span>
-            <i className="fas fa-sign-out-alt"></i>
-          </li>
-        ) : (
-          <li>
-            <a href="/login">Login/Signup</a>
-          </li>
-        )}
-      </ul>
-    </SideBarBox>
-  );
-};
-
-function toggleSidebar() {
-  const overley = document.getElementById("sidebar_overlay");
-  const sidebar = document.querySelector(".sidebar ul");
-
-  overley.classList.toggle("active");
-  sidebar.classList.toggle("active");
+function displayProfileOptions() {
+  const dropdown = document.querySelector("#profile_dropdown ul");
+  const overlay = document.querySelector("#profile_dropdown .overlay");
+  dropdown.classList.toggle("active");
+  overlay.classList.toggle("active");
 }

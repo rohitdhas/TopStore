@@ -27,4 +27,26 @@ router.get("/products/random", (req, res) => {
     .catch((err) => console.log(err));
 });
 
+router.get("/search", async (req, res) => {
+  try {
+    let results = await Product.aggregate([
+      {
+        "$search": {
+          "autocomplete": {
+            "query": `${req.query.term}`,
+            "path": "name",
+            "fuzzy": {
+              "maxEdits": 1,
+            },
+          },
+        },
+      },
+    ]);
+    res.json({ data: results });
+  } catch (e) {
+    console.log(e)
+    res.status(500).send({ message: e });
+  }
+});
+
 module.exports = router;

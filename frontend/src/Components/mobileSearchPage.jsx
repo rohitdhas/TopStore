@@ -1,20 +1,37 @@
-import { useRef, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
+import AutocompleteBar, {
+  openAutocompleteBar,
+  closeAutocompleteBar,
+  filterTags,
+} from "./autocompleteBar";
 
 export default function MobileSearchPage() {
-  const userInput = useRef("");
+  const [userInput, setUserInput] = useState("");
   const history = useHistory();
+  const [autoCompleteTags, setAutoCTags] = useState([]);
 
   useEffect(() => {
-    userInput.current.focus();
-  }, []);
+    if (!userInput) {
+      closeAutocompleteBar();
+      return;
+    }
+    fetch(`http://localhost:8080/search?term=${userInput}`)
+      .then((res) => res.json())
+      .then(({ data, message }) => {
+        if (message) return;
+        setAutoCTags(filterTags(data));
+        openAutocompleteBar();
+      })
+      .catch((err) => console.log(err));
+  }, [userInput]);
 
   function searchProducts(e) {
-    const { value } = userInput.current;
     e.preventDefault();
-    if (!value) return;
 
+    const { value } = userInput.current;
+    if (!value) return;
     history.replace("/");
     history.push(`search/${value}`);
   }
@@ -26,8 +43,13 @@ export default function MobileSearchPage() {
           onClick={() => history.goBack()}
           className="fas fa-arrow-circle-left"
         ></i>
-        <input type="text" ref={userInput} placeholder="Search for Products" />
+        <input
+          type="text"
+          placeholder="Search for Products"
+          onChange={(e) => setUserInput(e.target.value)}
+        />
       </form>
+      <AutocompleteBar tagsArray={autoCompleteTags} />
     </Search>
   );
 }

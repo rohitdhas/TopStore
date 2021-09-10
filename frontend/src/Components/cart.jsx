@@ -2,70 +2,26 @@ import { useEffect, useState, useRef } from "react";
 import CartItem from "./cartItem";
 import CartSections, { AddressForm } from "../Styles/cartStyles";
 import { CheckoutCard, MobileCheckoutBtn } from "./checkoutCard";
+import { startSpinner, closeSpinner } from "./spinner";
+import toggleAddressForm from "../helper_functions/toggleAddressForm";
+import checkout from "../helper_functions/checkout";
+import { getCartData } from "../helper_functions/cartHandler";
 
 export default function Cart() {
   let cartTotal = 0;
   const [cartItems, setCartItems] = useState([]);
   const userAddress = useRef("");
-  const userMobile = useRef();
+  const userMobile = useRef(0);
 
   useEffect(() => {
-    let loader = document.getElementById("loader_overlay");
-    loader.classList.add("active");
+    startSpinner();
 
     getCartData().then((data) => {
-      if ("message" in data) {
-        loader.classList.remove("active");
-        return;
-      }
-      setCartItems(data);
-      loader.classList.remove("active");
+      closeSpinner();
+      if ("message" in data) return;
+      else setCartItems(data);
     });
   }, []);
-
-  function checkout(e) {
-    e.preventDefault();
-    if (cartItems.length === 0) return;
-
-    let loader = document.getElementById("loader_overlay");
-    loader.classList.add("active");
-
-    fetch("http://localhost:8080/place-order", {
-      credentials: "include",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        address: userAddress.current.value,
-        mobile: userMobile.current.value,
-      }),
-    });
-
-    fetch("http://localhost:8080/create-checkout", {
-      credentials: "include",
-    })
-      .then((res) =>
-        res.ok ? res.json() : res.json().then((json) => Promise.reject(json))
-      )
-      .then(({ url }) => {
-        window.location = url;
-        loader.classList.remove("active");
-      })
-      .catch((err) => console.log(err));
-  }
-
-  function toggleAddressForm(e) {
-    e.preventDefault();
-    if (cartItems.length === 0) return;
-
-    const overlay = document.getElementById("address_form_overlay");
-    const form = document.querySelector(".address_form form");
-    userAddress.current.focus();
-
-    overlay.classList.toggle("active");
-    form.classList.toggle("active");
-  }
 
   return (
     <CartSections className="cart">
@@ -100,20 +56,16 @@ export default function Cart() {
           <CheckoutCard
             cartItemsLength={cartItems.length}
             cartTotal={cartTotal}
-            checkout={toggleAddressForm}
           />
         </div>
       </div>
       <div className="mobile-checkout">
-        <MobileCheckoutBtn
-          checkout={toggleAddressForm}
-          cartItemsLength={cartItems.length}
-        />
+        <MobileCheckoutBtn cartItemsLength={cartItems.length} />
       </div>
       <AddressForm className="address_form">
         <div id="address_form_overlay" onClick={toggleAddressForm}></div>
-        <form onSubmit={checkout}>
-          <p className="form_title">Enter your Address before proceeding!🙂</p>
+        <form onSubmit={(e) => checkout(e, userAddress, userMobile)}>
+          <p className="form_title">Enter your Address before proceeding!🚀</p>
           <textarea
             name="address"
             id="delivery_address"
@@ -141,12 +93,4 @@ export default function Cart() {
       </AddressForm>
     </CartSections>
   );
-}
-
-async function getCartData() {
-  let res = await fetch("http://localhost:8080/cart-items", {
-    credentials: "include",
-  });
-  let data = await res.json();
-  return data;
 }

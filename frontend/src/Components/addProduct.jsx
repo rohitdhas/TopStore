@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import styled from "styled-components";
 
 export default function AddProduct() {
   const [serverRes, setServerRes] = useState("");
@@ -25,7 +26,7 @@ export default function AddProduct() {
       image: urlRef.current.value,
       description: descriptionRef.current.value,
       category: categoryRef.current.value,
-      tags: [...tagsRef.current.value.split(" ")],
+      tags: [...tagsRef.current.value.split(", ")],
     };
 
     fetch("http://localhost:8080/product/add", {
@@ -48,36 +49,55 @@ export default function AddProduct() {
   }
 
   return (
-    <div>
-      <h1>Add Product to TopStore🛒🚀</h1>
+    <Form>
+      <h2>Add Product to TopStore🛒🚀</h2>
       <form onSubmit={handleAddProduct}>
         <div>
-          <label htmlFor="productName">Product Name</label>
-          <input type="text" name="name" id="productName" ref={nameRef} />
+          <input
+            type="text"
+            name="name"
+            id="productName"
+            ref={nameRef}
+            placeholder="Product Name"
+          />
         </div>
         <div>
-          <label htmlFor="price">Price</label>
-          <input type="number" name="price" id="price" ref={priceRef} />
+          <input
+            type="number"
+            name="price"
+            id="price"
+            ref={priceRef}
+            placeholder="price"
+          />
         </div>
         <div>
-          <label htmlFor="imgURL">Image URL</label>
-          <input type="text" name="image" id="imgURL" ref={urlRef} />
+          <input
+            type="text"
+            name="image"
+            id="imgURL"
+            ref={urlRef}
+            placeholder="image url"
+          />
         </div>
         <div>
-          <label htmlFor="description">Description</label>
           <input
             type="text"
             name="description"
             id="description"
+            placeholder="description"
             ref={descriptionRef}
           />
         </div>
         <div>
-          <label htmlFor="tags">Tags (space seprated)</label>
-          <input type="text" name="tags" id="tags" ref={tagsRef} />
+          <input
+            type="text"
+            name="tags"
+            id="tags"
+            ref={tagsRef}
+            placeholder="tags: (, ) seprated"
+          />
         </div>
         <div>
-          <label htmlFor="category">Product Category</label>
           <select ref={categoryRef} name="category" id="category">
             <option value="electronics">Electronics</option>
             <option value="smartphone">Smartphone</option>
@@ -85,11 +105,63 @@ export default function AddProduct() {
             <option value="accessories">Accessories</option>
             <option value="groceries">Groceries</option>
             <option value="books">Book</option>
+            <option value="other">Others</option>
           </select>
         </div>
         <button type="submit">Add Product</button>
       </form>
       <div>{!serverRes ? null : <h2>{serverRes}</h2>}</div>
-    </div>
+    </Form>
   );
 }
+
+const Form = styled.div`
+  margin-top: 60px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  height: 90vh;
+
+  form {
+    border: 1px solid;
+    padding: 10px;
+    border-radius: 5px;
+    width: 350px;
+
+    input {
+      font-size: 1.03rem;
+      border: 1px solid gray;
+      border-radius: 7px;
+      display: inline-block;
+      padding: 6px 10px;
+      font-size: 17px;
+      width: 100%;
+      margin: 5px 0;
+    }
+
+    select {
+      width: 100%;
+      padding: 5px;
+      margin: 5px 0;
+    }
+
+    button {
+      display: inline-block;
+      padding: 6px 10px;
+      font-size: 17px;
+      outline: none;
+      cursor: pointer;
+      border: none;
+      border-radius: 7px;
+      background-color: #1f1e1e;
+      color: white;
+      width: 100%;
+      margin-top: 10px;
+
+      &:hover {
+        background-color: blueviolet;
+      }
+    }
+  }
+`;

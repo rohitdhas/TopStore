@@ -1,38 +1,31 @@
 import { useRef, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import Form from "../Styles/registerFormStyles";
+import { closeSpinner, startSpinner } from "./spinner";
 
 export default function CreateAc({ notify }) {
   const fullNameRef = useRef("");
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const password_againRef = useRef("");
-
   const history = useHistory();
 
   useEffect(() => {
-    let loader = document.getElementById("loader_overlay");
-    loader.classList.add("active");
-
+    startSpinner();
     fetch("http://localhost:8080/data", {
       credentials: "include",
     })
       .then((res) => res.json())
       .then(({ data }) => {
-        if (!data) {
-          loader.classList.remove("active");
-          return;
-        }
-        loader.classList.remove("active");
+        closeSpinner();
+        if (!data) return;
         history.goBack();
       })
       .catch((err) => console.log(err));
   }, []);
 
   function handleAccountCreation(e) {
-    let loader = document.getElementById("loader_overlay");
-    loader.classList.add("active");
-
+    startSpinner();
     e.preventDefault();
     const userInputsRefs = [
       fullNameRef,
@@ -43,11 +36,14 @@ export default function CreateAc({ notify }) {
 
     // Validations for empty values and mismatched passwords
     userInputsRefs.forEach((input) => {
-      if (!input.current.value) return;
+      if (!input.current.value) {
+        closeSpinner();
+        return;
+      }
     });
 
     if (passwordRef.current.value !== password_againRef.current.value) {
-      loader.classList.remove("active");
+      closeSpinner();
       notify("Passwords don't Match!❌");
       return;
     }
@@ -69,7 +65,7 @@ export default function CreateAc({ notify }) {
     })
       .then((res) => res.json())
       .then(({ message, status }) => {
-        loader.classList.remove("active");
+        closeSpinner();
         notify(message);
         if (status === "success") {
           history.push("/login");

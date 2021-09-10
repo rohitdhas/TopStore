@@ -1,4 +1,6 @@
-export const CheckoutCard = ({ cartItemsLength, cartTotal, checkout }) => {
+import toggleAddressForm from "../helper_functions/toggleAddressForm";
+
+export const CheckoutCard = ({ cartItemsLength, cartTotal }) => {
   return (
     <>
       <h3>Pack everything Up</h3>
@@ -8,15 +10,20 @@ export const CheckoutCard = ({ cartItemsLength, cartTotal, checkout }) => {
           <strong>(${cartTotal})</strong>
         </p>
       </div>
-      <button id="checkout-btn" onClick={checkout}>
+      <button
+        id="checkout-btn"
+        onClick={cartItemsLength > 0 ? toggleAddressForm : null}
+      >
         Proceed to Checkout
       </button>
     </>
   );
 };
 
-export const MobileCheckoutBtn = ({ checkout, cartItemsLength }) => {
+export const MobileCheckoutBtn = ({ cartItemsLength }) => {
   return (
-    <button onClick={checkout}>Proceed to Buy ({cartItemsLength} Items)</button>
+    <button onClick={cartItemsLength > 0 ? toggleAddressForm : null}>
+      Proceed to Buy ({cartItemsLength} Items)
+    </button>
   );
 };

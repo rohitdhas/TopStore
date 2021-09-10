@@ -1,37 +1,33 @@
 import { useRef, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import Box from "../Styles/loginStyles";
+import { startSpinner, closeSpinner } from "./spinner";
 
 export default function Login({ notify }) {
   const history = useHistory();
-
   const emailRef = useRef("");
   const passwordRef = useRef("");
-  const localhost = "http://localhost:8080/";
 
   useEffect(() => {
-    let loader = document.getElementById("loader_overlay");
-    loader.classList.add("active");
+    startSpinner();
 
-    fetch(localhost + "isAuthenticated", {
+    fetch("http://localhost:8080/isAuthenticated", {
       credentials: "include",
     })
       .then((res) => res.json())
       .then((isAuthenticated) => {
-        loader.classList.remove("active");
+        closeSpinner();
         if (isAuthenticated) history.push("/");
       })
       .catch((err) => console.log(err));
   }, []);
 
   function handleLogin(event) {
-    let loader = document.getElementById("loader_overlay");
-    loader.classList.add("active");
-
+    startSpinner();
     event.preventDefault();
     if (!emailRef.current || !passwordRef.current) return;
 
-    fetch(localhost + "login", {
+    fetch("http://localhost:8080/login", {
       headers: {
         "Content-Type": "application/json",
       },
@@ -44,12 +40,11 @@ export default function Login({ notify }) {
     })
       .then((res) => res.json())
       .then(({ data, message }) => {
+        closeSpinner();
         if (!data) {
-          loader.classList.remove("active");
           notify(message);
         } else {
           notify(message);
-          loader.classList.remove("active");
           history.push("/");
         }
       })

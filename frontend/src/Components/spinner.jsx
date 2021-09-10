@@ -2,11 +2,21 @@ import styled from "styled-components";
 
 export default function Spinner() {
   return (
-    <Overlay id="loader_overlay" className="">
+    <Overlay id="loader_overlay">
       <span id="spinner"></span>
     </Overlay>
   );
 }
+
+export const startSpinner = () => {
+  let loader = document.getElementById("loader_overlay");
+  loader.classList.add("active");
+};
+
+export const closeSpinner = () => {
+  let loader = document.getElementById("loader_overlay");
+  loader.classList.remove("active");
+};
 
 const Overlay = styled.div`
   display: none;

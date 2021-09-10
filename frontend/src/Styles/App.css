@@ -4,3 +4,12 @@
   box-sizing: border-box;
   font-family: Gotham;
 }
+
+.autocomplete_bar_overlay.active {
+  position: fixed;
+  top: 8%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+}

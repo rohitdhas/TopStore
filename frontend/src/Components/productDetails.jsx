@@ -1,6 +1,7 @@
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import Details from "../Styles/productDetailStyles";
+import { addToCart } from "../helper_functions/cartHandler";
 
 export default function ProductDetails({ notify }) {
   const { productID } = useParams();
@@ -11,36 +12,11 @@ export default function ProductDetails({ notify }) {
       credentials: "include",
     })
       .then((res) => res.json())
-      .then((data) => setProductData(data))
-      .catch((err) => console.log(err));
-  }, []);
-
-  function addToCart() {
-    const { _id, description, image, price, name } = productData;
-
-    const data = {
-      _id,
-      description,
-      image,
-      price,
-      name,
-      quantity: 1,
-    };
-
-    fetch("http://localhost:8080/cart/modify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ type: "ADD", data }),
-    })
-      .then((res) => res.json())
-      .then(({ message }) => {
-        notify(message);
+      .then((data) => {
+        setProductData(data);
       })
       .catch((err) => console.log(err));
-  }
+  }, []);
 
   return (
     <Details className="product_detail_page">
@@ -57,7 +33,9 @@ export default function ProductDetails({ notify }) {
                 ? "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam deleniti rerum beatae nihil nam harum. Debitis ratione nostrum ipsa, tempora a commodi saepe recusandae amet voluptate fuga similique asperiores itaque."
                 : productData.description}
             </p>
-            <button onClick={addToCart}>Add to Cart🛒</button>
+            <button onClick={() => addToCart(productData, notify)}>
+              Add to Cart🛒
+            </button>
           </div>
         </>
       ) : (

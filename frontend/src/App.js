@@ -1,5 +1,5 @@
 import "./Styles/App.css";
-import { useEffect, useState, useRef } from "react";
+import { useState } from "react";
 import Login from "./Components/login";
 import Home from "./Components/home";
 import CreateAc from "./Components/createAc";
@@ -19,28 +19,13 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 function App() {
   const [resMessage, setResMessage] = useState("");
-  let notificationTimeout = useRef();
-
-  useEffect(() => {
-    clearTimeout(notificationTimeout);
-
-    if (resMessage === "") return;
-
-    let card = document.getElementById("card");
-    card.classList.add("active");
-
-    notificationTimeout = setTimeout(() => {
-      card.classList.remove("active");
-      setResMessage("");
-    }, 2500);
-  }, [resMessage]);
 
   return (
     <Router>
-      <ResCard message={resMessage} />
+      <ResCard message={resMessage} setMessage={setResMessage} />
       <Spinner />
+      {/* Routes Without Nav Start */}
       <Switch>
-        {/* Routes Without Nav Start */}
         <Route exact path="/login">
           <Login notify={setResMessage} />
         </Route>
@@ -50,38 +35,37 @@ function App() {
         <Route exact path="/mobile/search">
           <MobileSearchPage notify={setResMessage} />
         </Route>
+        <Navbar notify={setResMessage} />
+      </Switch>
+
+      <Switch>
         {/* Routes Without Nav End */}
         <Route exact path="/">
-          <Navbar notify={setResMessage} />
           <Home notify={setResMessage} />
           <Footer />
         </Route>
         <Route exact path="/cart">
-          <Navbar notify={setResMessage} />
           <Cart />
         </Route>
         <Route exact path="/product/:productID">
-          <Navbar notify={setResMessage} />
           <ProductDetails notify={setResMessage} />
         </Route>
         <Route exact path="/search/:product">
-          <Navbar notify={setResMessage} />
           <SearchPage notify={setResMessage} />
         </Route>
         <Route exact path="/payment-success">
-          <Navbar notify={setResMessage} />
           <PaymentSuccess />
         </Route>
         <Route exact path="/recommended">
-          <Navbar notify={setResMessage} />
           <Recommendations />
         </Route>
         {/* ----------------Not So IMP Routes---------------- */}
         <Route exact path="/create-product" component={AddProduct} />
-        <Route>
-          <Navbar notify={setResMessage} />
-          <PageNotFound />
-        </Route>
+        {
+          ['/login', '/user/create', '/mobile/search'].includes(window.location.pathname)
+            ? null
+            : <Route component={PageNotFound} />
+        }
       </Switch>
     </Router>
   );

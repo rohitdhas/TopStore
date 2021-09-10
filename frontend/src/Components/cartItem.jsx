@@ -1,12 +1,12 @@
 import { MobileItem, Item } from "../Styles/cartItemStyles";
+import { closeSpinner, startSpinner } from "../Components/spinner";
+import { getCartData } from "../helper_functions/cartHandler";
 
 export default function CartItem({ ItemData, setCartItems }) {
   const { price, image, name, quantity, _id } = ItemData;
 
   function removeFromCart(productID) {
-    let loader = document.getElementById("loader_overlay");
-    loader.classList.add("active");
-
+    startSpinner();
     fetch("http://localhost:8080/cart/modify", {
       credentials: "include",
       body: JSON.stringify({ type: "REMOVE", data: { _id: productID } }),
@@ -17,15 +17,13 @@ export default function CartItem({ ItemData, setCartItems }) {
     })
       .then((res) => res.json())
       .then(() => {
-        loader.classList.remove("active");
+        closeSpinner();
         getCartData().then((data) => setCartItems(data));
       });
   }
 
   function modifyQuantity(data) {
-    let loader = document.getElementById("loader_overlay");
-    loader.classList.add("active");
-
+    startSpinner();
     fetch("http://localhost:8080/cart/item/modify", {
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +34,7 @@ export default function CartItem({ ItemData, setCartItems }) {
     })
       .then((res) => res.json())
       .then(() => {
-        loader.classList.remove("active");
+        closeSpinner();
         getCartData().then((data) => setCartItems(data));
       })
       .catch((err) => console.log(err));
@@ -121,12 +119,4 @@ export default function CartItem({ ItemData, setCartItems }) {
       </MobileItem>
     </>
   );
-}
-
-async function getCartData() {
-  let res = await fetch("http://localhost:8080/cart-items", {
-    credentials: "include",
-  });
-  let data = await res.json();
-  return data;
 }

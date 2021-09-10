@@ -129,7 +129,7 @@ export const AddressForm = styled.div`
   form {
     position: fixed;
     left: 50%;
-    top: 25%;
+    top: 22%;
     transform: translateX(-50%) scale(0);
     background-color: white;
     padding: 10px;

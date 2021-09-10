@@ -16,6 +16,7 @@ router.post("/cart/modify", (req, res) => {
       User.findOne({ email, "cart._id": data._id }, (err, doc) => {
         if (err) return res.send("err");
         if (doc === null) {
+          data.quantity = 1;
           User.updateOne({ email }, { $push: { cart: data } })
             .then(() => res.send({ message: resMessages.addedToCart }))
             .catch((err) => console.log(err));
@@ -24,6 +25,7 @@ router.post("/cart/modify", (req, res) => {
         }
       });
     } else {
+      // Remove Item from Cart
       User.updateOne({ email }, { $pull: { cart: { _id: data._id } } })
         .then(() => res.send({ message: resMessages.itemRemoved }))
         .catch((err) => console.log(err));

@@ -1,19 +1,18 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import RecommendationPage from "../Styles/recommendedStyles";
+import { startSpinner, closeSpinner } from "./spinner";
 
 export default function Recommendations() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    let loader = document.getElementById("loader_overlay");
-    loader.classList.add("active");
-
+    startSpinner();
     fetch("http://localhost:8080/products/random")
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
-        loader.classList.remove("active");
+        closeSpinner();
       })
       .catch((err) => console.log(err));
   }, []);

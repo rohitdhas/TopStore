@@ -16,10 +16,21 @@ export const Nav = styled.div`
 
   .logo a {
     padding: 0;
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: bold;
     text-decoration: none;
     color: black;
+
+    span {
+      margin: 0;
+      font-weight: lighter;
+      transition: color 0.2s;
+    }
+    &:hover {
+      span {
+        color: blueviolet;
+      }
+    }
   }
 
   span {
