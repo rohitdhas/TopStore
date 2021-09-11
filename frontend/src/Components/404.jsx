@@ -26,4 +26,10 @@ const Box = styled.div`
     font-size: 1.5rem;
     font-weight: bold;
   }
+
+  @media (max-width: 750px) {
+    p {
+      font-size: 1.2rem;
+    }
+  }
 `;

@@ -7,34 +7,43 @@ import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
 import { HomePage, HotDealsSection, Category } from "../Styles/homeStyles";
 import { addToCart } from "../helper_functions/cartHandler";
+import { useEffect } from "react";
 
 export default function Home({ notify }) {
+  useEffect(() => {
+    const loader = document.querySelector(".home_loader");
+    loader.classList.remove("active");
+  }, []);
+
   return (
-    <HomePage>
-      <div className="home">
-        <div className="home_info">
-          <div className="title">
-            <p>Discover the gretest</p>
-            <p>Product Deals with Us</p>
+    <>
+      <div className="home_loader active"></div>
+      <HomePage>
+        <div className="home">
+          <div className="home_info">
+            <div className="title">
+              <p>Discover the gretest</p>
+              <p>Product Deals with Us</p>
+            </div>
+            <div className="home_text">
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Blanditiis culpa, ipsam non alias aspernatur corporis
+                voluptatibus voluptate veritatis dicta ipsum maxime.
+              </p>
+              <Link to="/recommended">
+                <button>Explore Products</button>
+              </Link>
+            </div>
           </div>
-          <div className="home_text">
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Blanditiis culpa, ipsam non alias aspernatur corporis voluptatibus
-              voluptate veritatis dicta ipsum maxime.
-            </p>
-            <Link to="/recommended">
-              <button>Explore Products</button>
-            </Link>
+          <div className="home_img">
+            <img src={box} alt="box" />
           </div>
         </div>
-        <div className="home_img">
-          <img src={box} alt="box" />
-        </div>
-      </div>
-      <Categories />
-      <HotDeals notify={notify} />
-    </HomePage>
+        <Categories />
+        <HotDeals notify={notify} />
+      </HomePage>
+    </>
   );
 }
 

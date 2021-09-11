@@ -5,7 +5,6 @@ import { CheckoutCard, MobileCheckoutBtn } from "./checkoutCard";
 import { startSpinner, closeSpinner } from "./spinner";
 import toggleAddressForm from "../helper_functions/toggleAddressForm";
 import checkout from "../helper_functions/checkout";
-import { getCartData } from "../helper_functions/cartHandler";
 
 export default function Cart() {
   let cartTotal = 0;
@@ -15,12 +14,15 @@ export default function Cart() {
 
   useEffect(() => {
     startSpinner();
-
-    getCartData().then((data) => {
-      closeSpinner();
-      if ("message" in data) return;
-      else setCartItems(data);
-    });
+    fetch("http://localhost:8080/cart-items", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        closeSpinner();
+        setCartItems(data);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   return (

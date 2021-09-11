@@ -24,7 +24,7 @@ function App() {
     <Router>
       <ResCard message={resMessage} setMessage={setResMessage} />
       <Spinner />
-      {/* Routes Without Nav Start */}
+      {/* Routes Without Nav */}
       <Switch>
         <Route exact path="/login">
           <Login notify={setResMessage} />
@@ -39,7 +39,7 @@ function App() {
       </Switch>
 
       <Switch>
-        {/* Routes Without Nav End */}
+        {/* Routes With Nav */}
         <Route exact path="/">
           <Home notify={setResMessage} />
           <Footer />
@@ -62,7 +62,7 @@ function App() {
         {/* ----------------Not So IMP Routes---------------- */}
         <Route exact path="/create-product" component={AddProduct} />
         {
-          ['/login', '/user/create', '/mobile/search'].includes(window.location.pathname)
+          ['/login', '/mobile/search', '/user/create'].includes(window.location.pathname)
             ? null
             : <Route component={PageNotFound} />
         }

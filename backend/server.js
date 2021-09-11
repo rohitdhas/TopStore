@@ -5,10 +5,9 @@ const cors = require("cors");
 const session = require("express-session");
 const passport = require("passport");
 const mongoose = require("mongoose");
-const Product = require("./model/productSchema");
+const MongoStore = require('connect-mongo')
 const cookieParser = require("cookie-parser");
 const cartRoutes = require("./Controller/CartController");
-const resMessages = require("./Controller/responseMessages");
 const searchRoutes = require("./Controller/SearchController");
 const stripeGateway = require("./Controller/StripeController");
 const userRoutes = require("./Controller/UserController");
@@ -29,10 +28,11 @@ mongoose
 // Middlewares
 
 app.use(express.json());
+app.set("trust proxy", 1);
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.CLIENT_URL,
     credentials: true,
   })
 );
@@ -42,6 +42,12 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
+    cookie: {
+      sameSite: "none",
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    },
+    store: MongoStore.create({ mongoUrl: dbURI }),
   })
 );
 
@@ -57,17 +63,6 @@ app.use(cartRoutes);
 app.use(searchRoutes);
 app.use(stripeGateway);
 app.use(userRoutes);
-
-// _____________________ NOT SO IMP ROUTES ________________________
-app.post("/product/add", (req, res) => {
-  const product = new Product(req.body);
-  try {
-    product.save();
-    res.status(201).send({ message: resMessages.productCreated });
-  } catch {
-    res.status(500).send({ message: resMessages.err });
-  }
-});
 
 // ________________________END OF ROUTES________________________
 

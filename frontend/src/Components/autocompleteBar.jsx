@@ -90,7 +90,7 @@ const Bar = styled.ul`
   @media (max-width: 750px) {
     width: 100%;
     left: 50%;
-    top: 7%;
+    top: 10%;
     padding: 0 10px;
     box-shadow: none;
 

@@ -6,7 +6,7 @@ export const HomePage = styled.div`
   .home {
     display: flex;
     justify-content: space-between;
-    height: 100vh;
+    height: 80vh;
 
     .home_info {
       display: flex;
@@ -102,7 +102,7 @@ export const Category = styled.div`
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(90deg, #892be2d1, #2c51ccc5);
+        background: linear-gradient(90deg, #892be2, #d513fc);
         border-radius: 7px;
         transition: all 0.3s;
       }
@@ -138,7 +138,7 @@ export const Category = styled.div`
         }
 
         &::before {
-          transform: translateX(-50%) translateY(10px);
+          transform: translateX(-50%) translateY(15px);
           color: black;
           font-size: 1rem;
         }

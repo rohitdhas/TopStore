@@ -17,11 +17,3 @@ export function addToCart(productData, notify) {
         })
         .catch((err) => console.log(err));
 }
-
-export async function getCartData() {
-    let res = await fetch("http://localhost:8080/cart-items", {
-        credentials: "include",
-    });
-    let data = await res.json();
-    return data;
-}

@@ -3,6 +3,8 @@ const router = express.Router();
 const resMessages = require("./responseMessages");
 const User = require("../model/usersSchema");
 const Order = require("../model/orderSchema");
+const Product = require("../model/productSchema");
+
 
 router.post("/cart/modify", (req, res) => {
   const { type, data } = req.body;
@@ -78,6 +80,17 @@ router.post("/place-order", (req, res) => {
     });
     newOrder.save();
     res.end();
+  }
+});
+
+// Route to add new product on store
+router.post("/product/add", (req, res) => {
+  const product = new Product(req.body);
+  try {
+    product.save();
+    res.status(201).send({ message: resMessages.productCreated });
+  } catch {
+    res.status(500).send({ message: resMessages.err });
   }
 });
 

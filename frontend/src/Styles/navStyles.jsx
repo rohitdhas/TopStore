@@ -24,12 +24,7 @@ export const Nav = styled.div`
     span {
       margin: 0;
       font-weight: lighter;
-      transition: color 0.2s;
-    }
-    &:hover {
-      span {
-        color: blueviolet;
-      }
+      color: blueviolet;
     }
   }
 

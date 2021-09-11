@@ -1,13 +1,12 @@
 import { MobileItem, Item } from "../Styles/cartItemStyles";
 import { closeSpinner, startSpinner } from "../Components/spinner";
-import { getCartData } from "../helper_functions/cartHandler";
 
 export default function CartItem({ ItemData, setCartItems }) {
   const { price, image, name, quantity, _id } = ItemData;
 
   function removeFromCart(productID) {
     startSpinner();
-    fetch("http://localhost:8080/cart/modify", {
+    const letestCartData = fetch("http://localhost:8080/cart/modify", {
       credentials: "include",
       body: JSON.stringify({ type: "REMOVE", data: { _id: productID } }),
       method: "POST",
@@ -17,14 +16,22 @@ export default function CartItem({ ItemData, setCartItems }) {
     })
       .then((res) => res.json())
       .then(() => {
-        closeSpinner();
-        getCartData().then((data) => setCartItems(data));
+        return fetch("http://localhost:8080/cart-items", {
+          credentials: "include",
+        }).then((res) => res.json());
       });
+
+    letestCartData
+      .then((data) => {
+        closeSpinner();
+        setCartItems(data);
+      })
+      .catch((err) => console.log(err));
   }
 
   function modifyQuantity(data) {
     startSpinner();
-    fetch("http://localhost:8080/cart/item/modify", {
+    const letestCartData = fetch("http://localhost:8080/cart/item/modify", {
       headers: {
         "Content-Type": "application/json",
       },
@@ -34,10 +41,17 @@ export default function CartItem({ ItemData, setCartItems }) {
     })
       .then((res) => res.json())
       .then(() => {
-        closeSpinner();
-        getCartData().then((data) => setCartItems(data));
+        return fetch("http://localhost:8080/cart-items", {
+          credentials: "include",
+        });
       })
+      .then((res) => res.json())
       .catch((err) => console.log(err));
+
+    letestCartData.then((data) => {
+      closeSpinner();
+      setCartItems(data);
+    });
   }
 
   return (
