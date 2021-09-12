@@ -58,11 +58,7 @@ function App() {
         </Route>
         {/* ----------------Not So IMP Routes---------------- */}
         <Route exact path="/create-product" component={AddProduct} />
-        {
-          ['/login', '/mobile/search', '/user/create'].includes(window.location.pathname)
-            ? null
-            : <Route component={PageNotFound} />
-        }
+          <Route component={PageNotFound} />
       </Switch>
     </Router>
   );
