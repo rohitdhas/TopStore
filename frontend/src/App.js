@@ -23,9 +23,10 @@ function App() {
   return (
     <Router>
       <ResCard message={resMessage} setMessage={setResMessage} />
+      <Navbar notify={setResMessage} />
       <Spinner />
-      {/* Routes Without Nav */}
       <Switch>
+        {/* Routes Without Nav */}
         <Route exact path="/login">
           <Login notify={setResMessage} />
         </Route>
@@ -35,10 +36,6 @@ function App() {
         <Route exact path="/mobile/search">
           <MobileSearchPage notify={setResMessage} />
         </Route>
-        <Navbar notify={setResMessage} />
-      </Switch>
-
-      <Switch>
         {/* Routes With Nav */}
         <Route exact path="/">
           <Home notify={setResMessage} />

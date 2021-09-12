@@ -10,19 +10,19 @@ export default function CreateAc({ notify }) {
   const password_againRef = useRef("");
   const history = useHistory();
 
-  useEffect(() => {
-    startSpinner();
-    fetch("http://localhost:8080/data", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then(({ data }) => {
-        closeSpinner();
-        if (!data) return;
-        history.goBack();
-      })
-      .catch((err) => console.log(err));
-  }, []);
+  // useEffect(() => {
+  //   startSpinner();
+  //   fetch("http://localhost:8080/data", {
+  //     credentials: "include",
+  //   })
+  //     .then((res) => res.json())
+  //     .then(({ data }) => {
+  //       closeSpinner();
+  //       if (!data) return;
+  //       history.goBack();
+  //     })
+  //     .catch((err) => console.log(err));
+  // }, []);
 
   function handleAccountCreation(e) {
     startSpinner();

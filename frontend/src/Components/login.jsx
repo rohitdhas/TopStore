@@ -8,19 +8,19 @@ export default function Login({ notify }) {
   const emailRef = useRef("");
   const passwordRef = useRef("");
 
-  useEffect(() => {
-    startSpinner();
+  // useEffect(() => {
+  //   startSpinner();
 
-    fetch("http://localhost:8080/isAuthenticated", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((isAuthenticated) => {
-        closeSpinner();
-        if (isAuthenticated) history.push("/");
-      })
-      .catch((err) => console.log(err));
-  }, []);
+  //   fetch("http://localhost:8080/isAuthenticated", {
+  //     credentials: "include",
+  //   })
+  //     .then((res) => res.json())
+  //     .then((isAuthenticated) => {
+  //       closeSpinner();
+  //       if (isAuthenticated) history.push("/");
+  //     })
+  //     .catch((err) => console.log(err));
+  // }, []);
 
   function handleLogin(event) {
     startSpinner();
