@@ -74,6 +74,13 @@ export const Category = styled.div`
   align-items: center;
   flex-direction: column;
 
+  h1 {
+    border: 2px solid;
+    color: blueviolet;
+    padding: 5px;
+    border-radius: 5px;
+  }
+
   .categories {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -160,6 +167,10 @@ export const HotDealsSection = styled.div`
   .hd_title {
     font-size: 2rem;
     font-weight: bold;
+    border: 2px solid;
+    padding: 5px;
+    border-radius: 5px;
+    color: blueviolet;
   }
 
   .product {

@@ -7,7 +7,7 @@ export const CheckoutCard = ({ cartItemsLength, cartTotal }) => {
       <div>
         <p>Total ({cartItemsLength} items)</p>
         <p>
-          <strong>(${cartTotal})</strong>
+          <strong>({cartTotal}/-)</strong>
         </p>
       </div>
       <button

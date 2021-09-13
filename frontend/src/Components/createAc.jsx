@@ -11,8 +11,9 @@ export default function CreateAc({ notify }) {
   const history = useHistory();
 
   useEffect(() => {
+    document.title = "Create New Account";
     startSpinner();
-    fetch("http://localhost:8080/data", {
+    fetch("/api/data", {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -55,7 +56,7 @@ export default function CreateAc({ notify }) {
     };
 
     // Making a POST request to the server with userData to create an account!
-    fetch("http://localhost:8080/user/create", {
+    fetch("/api/user/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

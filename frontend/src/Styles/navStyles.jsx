@@ -81,6 +81,21 @@ export const NavLinks = styled.div`
   align-items: center;
   position: relative;
 
+  .cart_icon {
+    position: relative;
+    &::after {
+      content: attr(data-count);
+      font-size: 1rem;
+      position: absolute;
+      top: -6px;
+      right: -10px;
+      color: white;
+      border-radius: 50%;
+      padding: 3px 7px;
+      background-color: tomato;
+    }
+  }
+
   #login_btn {
     padding: 7px;
     cursor: pointer;

@@ -3,7 +3,7 @@ export default function checkout(e, address, mobile) {
     e.preventDefault();
     startSpinner();
 
-    fetch("http://localhost:8080/place-order", {
+    fetch("/api/place-order", {
         credentials: "include",
         method: "POST",
         headers: {
@@ -15,7 +15,7 @@ export default function checkout(e, address, mobile) {
         }),
     });
 
-    fetch("http://localhost:8080/create-checkout", {
+    fetch("/api/create-checkout", {
         credentials: "include",
     })
         .then((res) =>

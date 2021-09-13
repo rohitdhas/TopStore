@@ -57,10 +57,15 @@ const Details = styled.div`
     margin: 60px 20px 0 20px;
     flex-direction: column;
     height: 90vh;
+    max-height: auto;
 
     img {
       height: 300px;
       width: 290px;
+    }
+
+    button {
+      width: 100%;
     }
 
     .product_info .product_d_p_name {

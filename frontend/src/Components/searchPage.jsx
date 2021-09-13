@@ -11,10 +11,11 @@ export default function SearchPage({ notify }) {
 
   useEffect(() => {
     startSpinner();
-    fetch(`http://localhost:8080/product/${product}`)
+    fetch(`/api/product/${product}`)
       .then((data) => data.json())
       .then((res) => {
         closeSpinner();
+        document.title = `Search - ${product}`;
         if (!res.length) {
           notify(`Try Searching Something Else!`);
         }
@@ -43,7 +44,7 @@ export default function SearchPage({ notify }) {
                   <img className="card_img" src={image} alt="product-img" />
                   <div>
                     <p className="search_p_p_name">{name}</p>
-                    <p className="search_p_p_price">Price - ${price}</p>
+                    <p className="search_p_p_price">Price - {price}/-</p>
                     <Link to={`/product/${_id}`}>
                       <button>View Product</button>
                     </Link>

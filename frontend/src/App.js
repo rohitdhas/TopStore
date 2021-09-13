@@ -23,8 +23,8 @@ function App() {
   return (
     <Router>
       <ResCard message={resMessage} setMessage={setResMessage} />
-      <Navbar notify={setResMessage} />
       <Spinner />
+      <Navbar notify={setResMessage} />
       <Switch>
         {/* Routes Without Nav */}
         <Route exact path="/login">
@@ -36,6 +36,7 @@ function App() {
         <Route exact path="/mobile/search">
           <MobileSearchPage notify={setResMessage} />
         </Route>
+
         {/* Routes With Nav */}
         <Route exact path="/">
           <Home notify={setResMessage} />
@@ -58,7 +59,7 @@ function App() {
         </Route>
         {/* ----------------Not So IMP Routes---------------- */}
         <Route exact path="/create-product" component={AddProduct} />
-          <Route component={PageNotFound} />
+        <Route component={PageNotFound} />
       </Switch>
     </Router>
   );

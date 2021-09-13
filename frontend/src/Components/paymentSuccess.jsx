@@ -1,6 +1,11 @@
 import styled from "styled-components";
+import { useEffect } from "react";
 
 export default function PaymentSuccess() {
+  useEffect(() => {
+    document.title = "Payment Successful🚀";
+  }, []);
+
   return (
     <Box id="payment-success-page">
       <p>Thanks for shopping with TopStore!🎉</p>

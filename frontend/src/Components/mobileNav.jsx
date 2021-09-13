@@ -25,7 +25,7 @@ function SideBar() {
   const history = useHistory();
 
   useEffect(() => {
-    fetch("http://localhost:8080/data", {
+    fetch("/api/data", {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -41,7 +41,7 @@ function SideBar() {
 
   function fireLogout() {
     startSpinner();
-    fetch("http://localhost:8080/logout", {
+    fetch("/api/logout", {
       credentials: "include",
     })
       .then((res) => res.json())

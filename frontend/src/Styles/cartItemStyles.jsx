@@ -59,7 +59,7 @@ export const MobileItem = styled.div`
   }
   .mobile_cart_item_modifier {
     button {
-      padding: 5px;
+      padding: 8px;
       border: none;
       border-radius: 5px;
       background-color: blueviolet;

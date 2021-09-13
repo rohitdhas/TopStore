@@ -66,7 +66,7 @@ app.use(userRoutes);
 
 // ________________________END OF ROUTES________________________
 
-app.listen(process.env.PORT || 4000, (err) => {
+app.listen(process.env.PORT || 8080, (err) => {
   if (err) console.log(err);
   else console.log("Server is Running!");
 });

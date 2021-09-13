@@ -9,6 +9,7 @@ import AutocompleteBar, {
 } from "./autocompleteBar";
 import { startSpinner, closeSpinner } from "./spinner";
 import NavItemsForMobile from "./mobileNav";
+import { updateCartCount } from "../helper_functions/cartHandler";
 
 export default function Navbar({ notify }) {
   const [userInput, setUserInput] = useState("");
@@ -19,13 +20,14 @@ export default function Navbar({ notify }) {
   const unwantedRoutes = ["/login", "/user/create", "/mobile/search"];
 
   useEffect(() => {
-    fetch("http://localhost:8080/data", {
+    fetch("/api/data", {
       credentials: "include",
     })
       .then((res) => res.json())
       .then(({ data }) => {
         if (data) {
           setUserData(data);
+          updateCartCount();
         }
       })
       .catch((err) => console.log(err));
@@ -33,8 +35,7 @@ export default function Navbar({ notify }) {
 
   useEffect(() => {
     if (!userInput) return;
-
-    fetch(`http://localhost:8080/search?term=${userInput}`)
+    fetch(`/api/search?term=${userInput}`)
       .then((res) => res.json())
       .then(({ data, message }) => {
         if (message) {
@@ -49,7 +50,7 @@ export default function Navbar({ notify }) {
 
   function fireLogout() {
     startSpinner();
-    fetch("http://localhost:8080/logout", {
+    fetch("/api/logout", {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -57,6 +58,7 @@ export default function Navbar({ notify }) {
         setUserData({});
         history.push("/");
         closeSpinner();
+        updateCartCount();
         notify(message);
       });
   }
@@ -69,7 +71,19 @@ export default function Navbar({ notify }) {
     history.push(`search/${userInput}`);
     closeAutocompleteBar();
   }
-  if (!unwantedRoutes.includes(location.pathname)) {
+
+  if (unwantedRoutes.includes(location.pathname)) return <></>;
+  else {
+    fetch("/api/data", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then(({ data }) => {
+        if (data) {
+          setUserData(data);
+        }
+      })
+      .catch((err) => console.log(err));
     return (
       <Nav>
         <div className="logo">
@@ -126,14 +140,14 @@ export default function Navbar({ notify }) {
           </span>
           <span className="cart">
             <Link to="/cart">
-              <i className="fas fa-shopping-cart"></i>
+              <i data-count={0} className="fas fa-shopping-cart cart_icon"></i>
             </Link>
           </span>
         </NavLinks>
         <NavItemsForMobile />
       </Nav>
     );
-  } else return <></>;
+  }
 }
 
 function displayProfileOptions() {

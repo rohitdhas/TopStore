@@ -7,13 +7,10 @@ const Form = styled.div`
   flex-direction: column;
   height: 100vh;
 
-  h1 {
-    margin-bottom: 20px;
-  }
-
   form {
     border-radius: 7px;
     padding: 20px;
+    margin: 20px;
     background-color: #892be2a0;
     border: 2px solid blueviolet;
     color: white;

@@ -8,12 +8,13 @@ export default function ProductDetails({ notify }) {
   const [productData, setProductData] = useState({});
 
   useEffect(() => {
-    fetch(`http://localhost:8080/product-detail/${productID}`, {
+    fetch(`/api/product-detail/${productID}`, {
       credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {
         setProductData(data);
+        document.title = data.name;
       })
       .catch((err) => console.log(err));
   }, []);
@@ -25,7 +26,7 @@ export default function ProductDetails({ notify }) {
           <img src={productData.image} alt="productImg" />
           <div className="product_info">
             <p className="product_d_p_name">{productData.name}</p>
-            <p className="price">Price - ${productData.price}</p>
+            <p className="price">Price - {productData.price}/-</p>
             <p className="product_description">
               <strong>Product Description</strong>
               <br />

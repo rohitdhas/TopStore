@@ -2,7 +2,7 @@ import { closeSpinner, startSpinner } from "../Components/spinner";
 
 export function addToCart(productData, notify) {
     startSpinner()
-    fetch("http://localhost:8080/cart/modify", {
+    fetch("/api/cart/modify", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -13,7 +13,21 @@ export function addToCart(productData, notify) {
         .then((res) => res.json())
         .then(({ message }) => {
             notify(message);
+            updateCartCount();
             closeSpinner();
+        })
+        .catch((err) => console.log(err));
+}
+
+export function updateCartCount() {
+    fetch("/api/cart-items", {
+        credentials: "include",
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            const icon = document.querySelector('[data-count]');
+            if (data.message) return;
+            else icon.dataset.count = data.length;
         })
         .catch((err) => console.log(err));
 }

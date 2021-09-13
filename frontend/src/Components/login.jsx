@@ -10,8 +10,9 @@ export default function Login({ notify }) {
 
   useEffect(() => {
     startSpinner();
+    document.title = "Login";
 
-    fetch("http://localhost:8080/isAuthenticated", {
+    fetch("/api/isAuthenticated", {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -27,7 +28,7 @@ export default function Login({ notify }) {
     event.preventDefault();
     if (!emailRef.current || !passwordRef.current) return;
 
-    fetch("http://localhost:8080/login", {
+    fetch("/api/login", {
       headers: {
         "Content-Type": "application/json",
       },

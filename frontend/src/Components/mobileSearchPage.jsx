@@ -17,7 +17,7 @@ export default function MobileSearchPage() {
       closeAutocompleteBar();
       return;
     }
-    fetch(`http://localhost:8080/search?term=${userInput}`)
+    fetch(`/api/search?term=${userInput}`)
       .then((res) => res.json())
       .then(({ data, message }) => {
         if (message) return;
@@ -61,6 +61,11 @@ const Search = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
 
     input {
       width: 90%;

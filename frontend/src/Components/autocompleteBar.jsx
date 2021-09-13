@@ -61,23 +61,24 @@ export function filterTags(tagsArr) {
 const Bar = styled.ul`
   display: none;
   position: fixed;
-  top: 8%;
+  top: 10%;
   left: 50%;
   transform: translateX(-50%);
-  width: 100%;
-  padding: 0 40px;
-  border-radius: 0 0 5px 5px;
+  width: 50%;
+  padding: 0 10px;
+  border-radius: 7px;
   background-color: white;
-  box-shadow: 1px 4px 7px -3px black;
-  z-index: 100;
+  box-shadow: 1px 2px 5px -3px black;
+  z-index: 50;
 
   li {
     list-style: none;
+    border-radius: 7px;
     padding: 5px;
 
     i {
       margin-right: 10px;
-      color: royalblue;
+      color: grey;
     }
 
     &:hover {
@@ -89,14 +90,15 @@ const Bar = styled.ul`
 
   @media (max-width: 750px) {
     width: 100%;
+    position: absolute;
     left: 50%;
     top: 10%;
     padding: 0 10px;
     box-shadow: none;
 
     li {
-      padding: 7px;
-      border-top: 1px solid grey;
+      padding: 7px 0;
+      border-radius: 0;
       border-bottom: 1px solid grey;
     }
   }

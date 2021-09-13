@@ -53,10 +53,10 @@ router.post("/user/create", async (req, res) => {
 
 router.get("/data", (req, res) => {
   if (req.user) {
-    const { full_name, email } = req.user;
+    const { full_name, email, cart } = req.user;
     res.json({
       message: resMessages.loginSuccess,
-      data: { full_name, email },
+      data: { full_name, email, count: cart.length },
     });
   } else res.json({ message: resMessages.unauthorized });
 });

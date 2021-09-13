@@ -1,4 +1,5 @@
 import { MobileItem, Item } from "../Styles/cartItemStyles";
+import { updateCartCount } from "../helper_functions/cartHandler";
 import { closeSpinner, startSpinner } from "../Components/spinner";
 
 export default function CartItem({ ItemData, setCartItems }) {
@@ -6,7 +7,7 @@ export default function CartItem({ ItemData, setCartItems }) {
 
   function removeFromCart(productID) {
     startSpinner();
-    const letestCartData = fetch("http://localhost:8080/cart/modify", {
+    const letestCartData = fetch("/api/cart/modify", {
       credentials: "include",
       body: JSON.stringify({ type: "REMOVE", data: { _id: productID } }),
       method: "POST",
@@ -16,7 +17,7 @@ export default function CartItem({ ItemData, setCartItems }) {
     })
       .then((res) => res.json())
       .then(() => {
-        return fetch("http://localhost:8080/cart-items", {
+        return fetch("/api/cart-items", {
           credentials: "include",
         }).then((res) => res.json());
       });
@@ -24,6 +25,7 @@ export default function CartItem({ ItemData, setCartItems }) {
     letestCartData
       .then((data) => {
         closeSpinner();
+        updateCartCount();
         setCartItems(data);
       })
       .catch((err) => console.log(err));
@@ -31,7 +33,7 @@ export default function CartItem({ ItemData, setCartItems }) {
 
   function modifyQuantity(data) {
     startSpinner();
-    const letestCartData = fetch("http://localhost:8080/cart/item/modify", {
+    const letestCartData = fetch("/api/cart/item/modify", {
       headers: {
         "Content-Type": "application/json",
       },
@@ -41,7 +43,7 @@ export default function CartItem({ ItemData, setCartItems }) {
     })
       .then((res) => res.json())
       .then(() => {
-        return fetch("http://localhost:8080/cart-items", {
+        return fetch("/api/cart-items", {
           credentials: "include",
         });
       })
@@ -91,7 +93,7 @@ export default function CartItem({ ItemData, setCartItems }) {
             </button>
           </div>
         </div>
-        <span>Price - ${price}</span>
+        <span>Price - {price}/-</span>
       </Item>
 
       <MobileItem className="cart_item">
@@ -101,7 +103,7 @@ export default function CartItem({ ItemData, setCartItems }) {
             <p>
               <strong>{name}</strong>
             </p>
-            <p>Price - ${price}</p>
+            <p>Price - {price}/-</p>
           </span>
         </div>
         <div className="mobile_cart_item_modifier">

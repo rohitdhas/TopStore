@@ -13,14 +13,16 @@ export default function Cart() {
   const userMobile = useRef(0);
 
   useEffect(() => {
+    document.title = "Your Cart!🛒";
     startSpinner();
-    fetch("http://localhost:8080/cart-items", {
+    fetch("/api/cart-items", {
       credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {
         closeSpinner();
-        setCartItems(data);
+        if (data.message || !data) return;
+        else setCartItems(data);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -49,7 +51,7 @@ export default function Cart() {
           <div className="cart_item cart_total">
             <p>
               <strong>
-                Total ({cartItems.length} items): ${cartTotal}
+                Total ({cartItems.length} items): {cartTotal}/-
               </strong>
             </p>
           </div>

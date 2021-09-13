@@ -11,6 +11,7 @@ import { useEffect } from "react";
 
 export default function Home({ notify }) {
   useEffect(() => {
+    document.title = "Home 🏠";
     const loader = document.querySelector(".home_loader");
     loader.classList.remove("active");
   }, []);
@@ -106,9 +107,9 @@ function HotDeals({ notify }) {
             <div>
               <p>iPhone X - 128GB</p>
               <p>
-                $899/-{" "}
+                89,999/-{" "}
                 <span>
-                  <strike>$999/-</strike>
+                  <strike>1,00,000/-</strike>
                 </span>
               </p>
               <p>
@@ -121,7 +122,7 @@ function HotDeals({ notify }) {
                       _id: "61272bbf93c6bb244848a960",
                       image:
                         "https://i5.walmartimages.com/asr/88fb66e0-0e9a-4454-a4c7-9a1e09e0f806_1.3b136386a3dd8092e69966dc05548fe7.jpeg?odnWidth=612&odnHeight=612&odnBg=ffffff",
-                      price: 899,
+                      price: 89999,
                       name: "iPhone X - 128GB",
                     },
                     notify
@@ -153,13 +154,13 @@ function HotDeals({ notify }) {
             <div>
               <p>iWatch 3</p>
               <p>
-                $199/-{" "}
+                14,999/-{" "}
                 <span>
-                  <strike>$249/-</strike>
+                  <strike>20,000/-</strike>
                 </span>
               </p>
               <p>
-                <strong>(20% discount)</strong>
+                <strong>(25% discount)</strong>
               </p>
               <button
                 onClick={() =>
@@ -168,7 +169,7 @@ function HotDeals({ notify }) {
                       _id: "61273db393c6bb244848a982",
                       image:
                         "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/MX8C2_VW_PF+watch-40-alum-silver-nc-nikese_VW_PF_WF_SI?wid=2000&hei=2000&fmt=png-alpha&.v=1566450081246,1618527243000",
-                      price: 199,
+                      price: 14999,
                       name: "iWatch 3 - Nike SE",
                     },
                     notify

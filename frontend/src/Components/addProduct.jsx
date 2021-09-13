@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import styled from "styled-components";
 
 export default function AddProduct() {
@@ -10,6 +10,10 @@ export default function AddProduct() {
   const descriptionRef = useRef("");
   const categoryRef = useRef("");
   const tagsRef = useRef("");
+
+  useEffect(() => {
+    document.title = "Create New Product!";
+  }, []);
 
   function handleAddProduct(e) {
     e.preventDefault();
@@ -29,7 +33,7 @@ export default function AddProduct() {
       tags: [...tagsRef.current.value.split(", ")],
     };
 
-    fetch("http://localhost:8080/product/add", {
+    fetch("/api/product/add", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

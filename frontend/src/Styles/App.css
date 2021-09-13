@@ -1,8 +1,13 @@
+@font-face {
+  font-family: Gotham;
+  src: url(../other_media/GothamMedium.ttf);
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Gotham;
+  font-family: Gotham, sans-serif;
 }
 
 .autocomplete_bar_overlay.active {
