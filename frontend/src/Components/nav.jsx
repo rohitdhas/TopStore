@@ -16,8 +16,8 @@ export default function Navbar({ notify }) {
   const history = useHistory();
   const [userData, setUserData] = useState({});
   const [autoCompleteTags, setAutoCTags] = useState([]);
-  const location = useLocation();
   const unwantedRoutes = ["/login", "/user/create", "/mobile/search"];
+  const location = useLocation();
 
   useEffect(() => {
     fetch("/api/data", {
@@ -31,7 +31,7 @@ export default function Navbar({ notify }) {
         }
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!userInput) return;
@@ -74,16 +74,6 @@ export default function Navbar({ notify }) {
 
   if (unwantedRoutes.includes(location.pathname)) return <></>;
   else {
-    fetch("/api/data", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then(({ data }) => {
-        if (data) {
-          setUserData(data);
-        }
-      })
-      .catch((err) => console.log(err));
     return (
       <Nav>
         <div className="logo">
