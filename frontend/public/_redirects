@@ -1,2 +1,2 @@
-/api/_ https://top-store.herokuapp.com/:splat 200
-/_ /index.html 200
+/api/* https://top-store.herokuapp.com/:splat 200
+/* /index.html 200
