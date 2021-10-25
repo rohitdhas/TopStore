@@ -43,11 +43,11 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
-    // cookie: {
-    //   sameSite: "none",
-    //   secure: true,
-    //   maxAge: 7 * 24 * 60 * 60 * 1000
-    // },
+    cookie: {
+      sameSite: "none",
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    },
     store: MongoStore.create({ mongoUrl: dbURI }),
   })
 );
