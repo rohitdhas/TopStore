@@ -1,60 +1,10 @@
 import { MobileItem, Item } from "../Styles/cartItemStyles";
-import { updateCartCount } from "../helper_functions/cartHandler";
-import { closeSpinner, startSpinner } from "../Components/spinner";
+import { useCart } from "../helpers/cartHandler";
 
-export default function CartItem({ ItemData, setCartItems }) {
+export default function CartItem({ ItemData }) {
   const { price, image, name, quantity, _id } = ItemData;
 
-  function removeFromCart(productID) {
-    startSpinner();
-    const letestCartData = fetch("/api/cart/modify", {
-      credentials: "include",
-      body: JSON.stringify({ type: "REMOVE", data: { _id: productID } }),
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then(() => {
-        return fetch("/api/cart-items", {
-          credentials: "include",
-        }).then((res) => res.json());
-      });
-
-    letestCartData
-      .then((data) => {
-        closeSpinner();
-        updateCartCount();
-        setCartItems(data);
-      })
-      .catch((err) => console.log(err));
-  }
-
-  function modifyQuantity(data) {
-    startSpinner();
-    const letestCartData = fetch("/api/cart/item/modify", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      credentials: "include",
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then(() => {
-        return fetch("/api/cart-items", {
-          credentials: "include",
-        });
-      })
-      .then((res) => res.json())
-      .catch((err) => console.log(err));
-
-    letestCartData.then((data) => {
-      closeSpinner();
-      setCartItems(data);
-    });
-  }
+  const { removeFromCart, modifyQuantity } = useCart();
 
   return (
     <>

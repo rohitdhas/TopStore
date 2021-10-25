@@ -21,8 +21,8 @@ module.exports = (passport) => {
   passport.serializeUser((user, done) => done(null, user.id));
   passport.deserializeUser((id, done) => {
     User.findById(id, (err, user) => {
-      const { full_name, email, cart } = user;
-      const safeData = { full_name, email, cart };
+      const { full_name, email, cart, type } = user;
+      const safeData = { full_name, email, cart, type };
       done(err, safeData);
     });
   });

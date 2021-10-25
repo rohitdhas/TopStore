@@ -1,44 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
-import AutocompleteBar, {
-  openAutocompleteBar,
-  closeAutocompleteBar,
-  filterTags,
-} from "./autocompleteBar";
+import AutocompleteBar from "../Components/autocompleteBar";
+import { useAutocomplete, searchProducts } from "../helpers/searchHandler";
 
 export default function MobileSearchPage() {
   const [userInput, setUserInput] = useState("");
   const history = useHistory();
-  const [autoCompleteTags, setAutoCTags] = useState([]);
-
-  useEffect(() => {
-    if (!userInput) {
-      closeAutocompleteBar();
-      return;
-    }
-    fetch(`/api/search?term=${userInput}`)
-      .then((res) => res.json())
-      .then(({ data, message }) => {
-        if (message) return;
-        setAutoCTags(filterTags(data));
-        openAutocompleteBar();
-      })
-      .catch((err) => console.log(err));
-  }, [userInput]);
-
-  function searchProducts(e) {
-    e.preventDefault();
-
-    const { value } = userInput.current;
-    if (!value) return;
-    history.replace("/");
-    history.push(`search/${value}`);
-  }
+  const { tags } = useAutocomplete(userInput);
 
   return (
     <Search>
-      <form onSubmit={searchProducts}>
+      <form onSubmit={(e) => searchProducts(e, userInput, history)}>
         <i
           onClick={() => history.goBack()}
           className="fas fa-arrow-circle-left"
@@ -49,7 +22,7 @@ export default function MobileSearchPage() {
           onChange={(e) => setUserInput(e.target.value)}
         />
       </form>
-      <AutocompleteBar tagsArray={autoCompleteTags} />
+      <AutocompleteBar tagsArray={tags} />
     </Search>
   );
 }

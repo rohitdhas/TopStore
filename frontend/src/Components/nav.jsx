@@ -2,75 +2,25 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory, useLocation } from "react-router";
 import { Nav, NavLinks } from "../Styles/navStyles";
-import AutocompleteBar, {
-  openAutocompleteBar,
-  closeAutocompleteBar,
-  filterTags,
-} from "./autocompleteBar";
-import { startSpinner, closeSpinner } from "./spinner";
+import AutocompleteBar from "./autocompleteBar";
+import { displayProfileOptions } from "../helpers/togglers";
+import { useUserAuth, useUserData } from "../helpers/userHandler";
+import { useAutocomplete, searchProducts } from "../helpers/searchHandler";
 import NavItemsForMobile from "./mobileNav";
-import { updateCartCount } from "../helper_functions/cartHandler";
 
-export default function Navbar({ notify }) {
+export default function Navbar() {
   const [userInput, setUserInput] = useState("");
-  const history = useHistory();
-  const [userData, setUserData] = useState({});
-  const [autoCompleteTags, setAutoCTags] = useState([]);
   const unwantedRoutes = ["/login", "/user/create", "/mobile/search"];
+  const history = useHistory();
   const location = useLocation();
 
+  const { fetchUserData, fireLogout } = useUserAuth();
+  const { full_name, email, cart, type } = useUserData();
+  const { tags } = useAutocomplete(userInput);
+
   useEffect(() => {
-    fetch("/api/data", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then(({ data }) => {
-        if (data) {
-          setUserData(data);
-          updateCartCount();
-        }
-      })
-      .catch((err) => console.log(err));
+    fetchUserData();
   }, [location.pathname]);
-
-  useEffect(() => {
-    if (!userInput) return;
-    fetch(`/api/search?term=${userInput}`)
-      .then((res) => res.json())
-      .then(({ data, message }) => {
-        if (message) {
-          console.log(message);
-          return;
-        }
-        setAutoCTags(filterTags(data));
-        openAutocompleteBar();
-      })
-      .catch((err) => console.log(err));
-  }, [userInput]);
-
-  function fireLogout() {
-    startSpinner();
-    fetch("/api/logout", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then(({ message }) => {
-        setUserData({});
-        history.push("/");
-        closeSpinner();
-        updateCartCount();
-        notify(message);
-      });
-  }
-
-  function searchProducts(e) {
-    e.preventDefault();
-
-    if (!userInput) return;
-    history.replace("/");
-    history.push(`search/${userInput}`);
-    closeAutocompleteBar();
-  }
 
   if (unwantedRoutes.includes(location.pathname)) return <></>;
   else {
@@ -82,7 +32,7 @@ export default function Navbar({ notify }) {
           </Link>
         </div>
         <div>
-          <form onSubmit={searchProducts}>
+          <form onSubmit={(e) => searchProducts(e, userInput, history)}>
             <input
               type="text"
               placeholder="Search for Products"
@@ -94,11 +44,11 @@ export default function Navbar({ notify }) {
               <i className="fas fa-search"></i>
             </button>
           </form>
-          <AutocompleteBar tagsArray={autoCompleteTags} />
+          <AutocompleteBar tagsArray={tags} />
         </div>
         <NavLinks className="navlinks">
           <span className="user_avatar">
-            {!userData.full_name ? (
+            {!full_name ? (
               <Link to="/login">
                 <button id="login_btn">Login/Sign Up</button>
               </Link>
@@ -116,10 +66,21 @@ export default function Navbar({ notify }) {
                       alt="profile"
                     />
                     <div>
-                      <p>{userData.full_name}</p>
-                      <p>{userData.email}</p>
+                      <p>
+                        {full_name}{" "}
+                        <strong>{type === "admin" ? "(Admin)" : null}</strong>
+                      </p>
+                      <p>{email}</p>
                     </div>
                   </li>
+                  {type === "admin" ? (
+                    <Link to="/admin-panel">
+                      <li>
+                        <span>Admin Panel</span>
+                        <i className="fas fa-cog"></i>
+                      </li>
+                    </Link>
+                  ) : null}
                   <li onClick={fireLogout}>
                     <span>Sign Out</span>
                     <i className="fas fa-sign-out-alt"></i>
@@ -130,7 +91,10 @@ export default function Navbar({ notify }) {
           </span>
           <span className="cart">
             <Link to="/cart">
-              <i data-count={0} className="fas fa-shopping-cart cart_icon"></i>
+              <i
+                data-count={cart.length}
+                className="fas fa-shopping-cart cart_icon"
+              ></i>
             </Link>
           </span>
         </NavLinks>
@@ -138,11 +102,4 @@ export default function Navbar({ notify }) {
       </Nav>
     );
   }
-}
-
-function displayProfileOptions() {
-  const dropdown = document.querySelector("#profile_dropdown ul");
-  const overlay = document.querySelector("#profile_dropdown .overlay");
-  dropdown.classList.toggle("active");
-  overlay.classList.toggle("active");
 }

@@ -1,4 +1,4 @@
-import toggleAddressForm from "../helper_functions/toggleAddressForm";
+import { toggleAddressForm } from "../helpers/togglers";
 
 export const CheckoutCard = ({ cartItemsLength, cartTotal }) => {
   return (

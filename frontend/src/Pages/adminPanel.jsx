@@ -1,9 +1,9 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import styled from "styled-components";
+import { useUserData } from "../helpers/userHandler";
+import useAdminPanel from "../helpers/adminPanelManager";
 
-export default function AddProduct() {
-  const [serverRes, setServerRes] = useState("");
-
+export default function AdminPanel() {
   const nameRef = useRef("");
   const priceRef = useRef(0);
   const urlRef = useRef("");
@@ -11,51 +11,29 @@ export default function AddProduct() {
   const categoryRef = useRef("");
   const tagsRef = useRef("");
 
+  const refs = {
+    nameRef,
+    priceRef,
+    descriptionRef,
+    categoryRef,
+    tagsRef,
+    urlRef,
+  };
+
+  const { type } = useUserData();
+  const { addProduct } = useAdminPanel();
+
   useEffect(() => {
     document.title = "Create New Product!";
+    if (type !== "admin") {
+      window.location = "/";
+    }
   }, []);
-
-  function handleAddProduct(e) {
-    e.preventDefault();
-    const refs = [nameRef, priceRef, urlRef, categoryRef, tagsRef];
-    // Cheking for empty values
-    refs.forEach((ref) => {
-      if (!ref.current.value) return;
-    });
-    // ________________________________________
-    // Sending data to Server
-    const productData = {
-      name: nameRef.current.value,
-      price: priceRef.current.value,
-      image: urlRef.current.value,
-      description: descriptionRef.current.value,
-      category: categoryRef.current.value,
-      tags: [...tagsRef.current.value.split(", ")],
-    };
-
-    fetch("/api/product/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(productData),
-    })
-      .then((res) => res.text())
-      .then((msg) => {
-        // Emptying input values
-        refs.forEach((ref) => {
-          ref.current.value = "";
-        });
-        setServerRes(msg);
-        setTimeout(() => setServerRes(""), 5000);
-      })
-      .catch((err) => console.log(err));
-  }
 
   return (
     <Form>
       <h2>Add Product to TopStore🛒🚀</h2>
-      <form onSubmit={handleAddProduct}>
+      <form onSubmit={(e) => addProduct(e, refs)}>
         <div>
           <input
             type="text"
@@ -63,6 +41,7 @@ export default function AddProduct() {
             id="productName"
             ref={nameRef}
             placeholder="Product Name"
+            required
           />
         </div>
         <div>
@@ -72,6 +51,7 @@ export default function AddProduct() {
             id="price"
             ref={priceRef}
             placeholder="price"
+            required
           />
         </div>
         <div>
@@ -81,6 +61,7 @@ export default function AddProduct() {
             id="imgURL"
             ref={urlRef}
             placeholder="image url"
+            required
           />
         </div>
         <div>
@@ -99,10 +80,11 @@ export default function AddProduct() {
             id="tags"
             ref={tagsRef}
             placeholder="tags: (, ) seprated"
+            required
           />
         </div>
         <div>
-          <select ref={categoryRef} name="category" id="category">
+          <select ref={categoryRef} required name="category" id="category">
             <option value="electronics">Electronics</option>
             <option value="smartphone">Smartphone</option>
             <option value="clothings">Clothings</option>
@@ -114,7 +96,6 @@ export default function AddProduct() {
         </div>
         <button type="submit">Add Product</button>
       </form>
-      <div>{!serverRes ? null : <h2>{serverRes}</h2>}</div>
     </Form>
   );
 }

@@ -1,64 +1,45 @@
 import "./Styles/App.css";
-import { useState } from "react";
-import Login from "./Components/login";
-import Home from "./Components/home";
-import CreateAc from "./Components/createAc";
+import Login from "./Pages/login";
+import CreateAc from "./Pages/createAc";
+import Home from "./Pages/home";
+import ProductDetails from "./Pages/productDetails";
+import SearchPage from "./Pages/searchPage";
+import Cart from "./Pages/cart";
+import AdminPanel from "./Pages/adminPanel";
+import MobileSearchPage from "./Pages/mobileSearchPage";
+import PaymentSuccess from "./Pages/paymentSuccess";
+import Recommendations from "./Pages/recommendations";
+import PageNotFound from "./Pages/404";
 import Navbar from "./Components/nav";
 import Footer from "./Components/footer";
-import ProductDetails from "./Components/productDetails";
-import SearchPage from "./Components/searchPage";
-import Cart from "./Components/cart";
-import AddProduct from "./Components/addProduct";
 import Spinner from "./Components/spinner";
 import ResCard from "./Components/responseCard";
-import MobileSearchPage from "./Components/mobileSearchPage";
-import PaymentSuccess from "./Components/paymentSuccess";
-import Recommendations from "./Components/recommendations";
-import PageNotFound from "./Components/404";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 function App() {
-  const [resMessage, setResMessage] = useState("");
-
   return (
     <Router>
-      <ResCard message={resMessage} setMessage={setResMessage} />
+      <ResCard />
       <Spinner />
-      <Navbar notify={setResMessage} />
+      <Navbar />
       <Switch>
         {/* Routes Without Nav */}
-        <Route exact path="/login">
-          <Login notify={setResMessage} />
-        </Route>
-        <Route exact path="/user/create">
-          <CreateAc notify={setResMessage} />
-        </Route>
-        <Route exact path="/mobile/search">
-          <MobileSearchPage notify={setResMessage} />
-        </Route>
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/user/create" component={CreateAc} />
+        <Route exact path="/mobile/search" component={MobileSearchPage} />
 
         {/* Routes With Nav */}
         <Route exact path="/">
-          <Home notify={setResMessage} />
+          <Home />
           <Footer />
         </Route>
-        <Route exact path="/cart">
-          <Cart />
-        </Route>
-        <Route exact path="/product/:productID">
-          <ProductDetails notify={setResMessage} />
-        </Route>
-        <Route exact path="/search/:product">
-          <SearchPage notify={setResMessage} />
-        </Route>
-        <Route exact path="/payment-success">
-          <PaymentSuccess />
-        </Route>
-        <Route exact path="/recommended">
-          <Recommendations />
-        </Route>
+        <Route exact path="/cart" component={Cart} />
+        <Route exact path="/product/:productID" component={ProductDetails} />
+        <Route exact path="/search/:product" component={SearchPage} />
+        <Route exact path="/payment-success" component={PaymentSuccess} />
+        <Route exact path="/recommended" component={Recommendations} />
         {/* ----------------Not So IMP Routes---------------- */}
-        <Route exact path="/create-product" component={AddProduct} />
+        <Route exact path="/admin-panel" component={AdminPanel} />
         <Route component={PageNotFound} />
       </Switch>
     </Router>

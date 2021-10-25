@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useHistory } from "react-router";
+import { closeAutocompleteBar } from "../helpers/togglers";
 
 export default function AutocompleteBar({ tagsArray }) {
   const history = useHistory();
@@ -9,6 +10,7 @@ export default function AutocompleteBar({ tagsArray }) {
     history.push(`search/${tag}`);
     closeAutocompleteBar();
   }
+
   return (
     <>
       <div
@@ -29,33 +31,6 @@ export default function AutocompleteBar({ tagsArray }) {
       </Bar>
     </>
   );
-}
-
-export function openAutocompleteBar() {
-  const bar = document.querySelector(".autocomplete_bar");
-  const overlay = document.querySelector(".autocomplete_bar_overlay");
-  bar.classList.add("active");
-  overlay.classList.add("active");
-}
-
-export function closeAutocompleteBar() {
-  const bar = document.querySelector(".autocomplete_bar");
-  const overlay = document.querySelector(".autocomplete_bar_overlay");
-  bar.classList.remove("active");
-  overlay.classList.remove("active");
-}
-
-export function filterTags(tagsArr) {
-  let arr = [];
-  if (tagsArr.length > 2) {
-    let firstFew = tagsArr.slice(0, 6);
-    firstFew.map((obj) => {
-      arr.push(...obj.tags.slice(0, 2));
-    });
-  } else {
-    arr.push(...tagsArr[0].tags.slice(0, 6));
-  }
-  return arr;
 }
 
 const Bar = styled.ul`

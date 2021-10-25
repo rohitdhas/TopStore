@@ -2,23 +2,26 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { SearchPageBox, ProductCard } from "../Styles/searchPageStyles";
-import { addToCart } from "../helper_functions/cartHandler";
-import { startSpinner, closeSpinner } from "./spinner";
+import { closeSpinner, startSpinner } from "../helpers/togglers";
+import { useCart } from "../helpers/cartHandler";
 
-export default function SearchPage({ notify }) {
+export default function SearchPage() {
   const { product } = useParams();
   const [dbProducts, setDBProducts] = useState([]);
+  const server_url = process.env.REACT_APP_SERVER_URL;
+
+  const { addToCart } = useCart();
 
   useEffect(() => {
     startSpinner();
-    fetch(`/api/product/${product}`)
+    fetch(`${server_url}/product/${product}`)
       .then((data) => data.json())
       .then((res) => {
         closeSpinner();
         document.title = `Search - ${product}`;
-        if (!res.length) {
-          notify(`Try Searching Something Else!`);
-        }
+        // if (!res.length) {
+        //   notify(`Try Searching Something Else!`);
+        // }
         setDBProducts(res);
       })
       .catch((err) => console.log(err));
@@ -50,7 +53,7 @@ export default function SearchPage({ notify }) {
                     </Link>
                   </div>
                 </span>
-                <button onClick={() => addToCart(productData, notify)}>
+                <button onClick={() => addToCart(productData)}>
                   Add to Cart🛒
                 </button>
               </ProductCard>

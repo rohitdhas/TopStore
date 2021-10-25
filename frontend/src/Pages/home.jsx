@@ -6,19 +6,16 @@ import cloths from "../Images/cloths.jpg";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
 import { HomePage, HotDealsSection, Category } from "../Styles/homeStyles";
-import { addToCart } from "../helper_functions/cartHandler";
+import { useCart } from "../helpers/cartHandler";
 import { useEffect } from "react";
 
-export default function Home({ notify }) {
+export default function Home() {
   useEffect(() => {
     document.title = "Home 🏠";
-    const loader = document.querySelector(".home_loader");
-    loader.classList.remove("active");
   }, []);
 
   return (
     <>
-      <div className="home_loader active"></div>
       <HomePage>
         <div className="home">
           <div className="home_info">
@@ -42,7 +39,7 @@ export default function Home({ notify }) {
           </div>
         </div>
         <Categories />
-        <HotDeals notify={notify} />
+        <HotDeals />
       </HomePage>
     </>
   );
@@ -93,7 +90,9 @@ function Categories() {
   );
 }
 
-function HotDeals({ notify }) {
+function HotDeals() {
+  const { addToCart } = useCart();
+
   return (
     <HotDealsSection className="hot_deals_section">
       <p className="hd_title">Todays Hot Deals🔥</p>
@@ -117,16 +116,13 @@ function HotDeals({ notify }) {
               </p>
               <button
                 onClick={() =>
-                  addToCart(
-                    {
-                      _id: "61272bbf93c6bb244848a960",
-                      image:
-                        "https://i5.walmartimages.com/asr/88fb66e0-0e9a-4454-a4c7-9a1e09e0f806_1.3b136386a3dd8092e69966dc05548fe7.jpeg?odnWidth=612&odnHeight=612&odnBg=ffffff",
-                      price: 89999,
-                      name: "iPhone X - 128GB",
-                    },
-                    notify
-                  )
+                  addToCart({
+                    _id: "61272bbf93c6bb244848a960",
+                    image:
+                      "https://i5.walmartimages.com/asr/88fb66e0-0e9a-4454-a4c7-9a1e09e0f806_1.3b136386a3dd8092e69966dc05548fe7.jpeg?odnWidth=612&odnHeight=612&odnBg=ffffff",
+                    price: 89999,
+                    name: "iPhone X - 128GB",
+                  })
                 }
               >
                 Add to Cart
@@ -164,16 +160,13 @@ function HotDeals({ notify }) {
               </p>
               <button
                 onClick={() =>
-                  addToCart(
-                    {
-                      _id: "61273db393c6bb244848a982",
-                      image:
-                        "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/MX8C2_VW_PF+watch-40-alum-silver-nc-nikese_VW_PF_WF_SI?wid=2000&hei=2000&fmt=png-alpha&.v=1566450081246,1618527243000",
-                      price: 14999,
-                      name: "iWatch 3 - Nike SE",
-                    },
-                    notify
-                  )
+                  addToCart({
+                    _id: "61273db393c6bb244848a982",
+                    image:
+                      "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/MX8C2_VW_PF+watch-40-alum-silver-nc-nikese_VW_PF_WF_SI?wid=2000&hei=2000&fmt=png-alpha&.v=1566450081246,1618527243000",
+                    price: 14999,
+                    name: "iWatch 3 - Nike SE",
+                  })
                 }
               >
                 Add to Cart

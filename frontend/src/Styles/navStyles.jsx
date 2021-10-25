@@ -156,6 +156,7 @@ export const NavLinks = styled.div`
       border-radius: 7px;
       position: absolute;
       right: 40%;
+      width: max-content;
       margin-top: 15px;
 
       &::after {
@@ -176,12 +177,19 @@ export const NavLinks = styled.div`
         margin: 0 5px;
         border-radius: 50%;
       }
+
+      a {
+        text-decoration: none;
+      }
+
       li {
         display: flex;
         align-items: center;
         border-bottom: 2px solid #510797;
-        padding: 7px;
+        padding: 0 10px;
+        height: 60px;
         background-color: #a765e4;
+
         &:hover {
           background-color: #59208fea;
           cursor: pointer;
@@ -193,6 +201,7 @@ export const NavLinks = styled.div`
       }
 
       li:last-child {
+        border-top: 2px solid #510797;
         border-bottom: none;
       }
     }

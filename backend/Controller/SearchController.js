@@ -1,9 +1,7 @@
-const express = require("express");
-const router = express.Router();
 const Product = require("../model/productSchema");
 const resMessages = require("./responseMessages");
 
-router.get("/product/:search", (req, res) => {
+const searchProducts = (req, res) => {
   const productTags = req.params.search.toLowerCase().split(" ");
 
   Product.find({ tags: { $all: productTags } })
@@ -11,23 +9,23 @@ router.get("/product/:search", (req, res) => {
       res.json(data);
     })
     .catch((err) => console.log(err));
-});
+}
 
-router.get("/product-detail/:id", (req, res) => {
+const getProductDetails = (req, res) => {
   const id = req.params.id;
   Product.findById(id, (err, doc) => {
     if (err) res.send({ message: resMessages.err });
     else res.send(doc);
   });
-});
+}
 
-router.get("/products/random", (req, res) => {
+const getRandomProducts = (req, res) => {
   Product.aggregate([{ $sample: { size: 6 } }])
     .then((data) => res.json(data))
     .catch((err) => console.log(err));
-});
+}
 
-router.get("/search", async (req, res) => {
+const searchAutoComplete = async (req, res) => {
   try {
     let results = await Product.aggregate([
       {
@@ -47,6 +45,6 @@ router.get("/search", async (req, res) => {
     console.log(e)
     res.status(500).send({ message: e });
   }
-});
+}
 
-module.exports = router;
+module.exports = { searchAutoComplete, searchProducts, getProductDetails, getRandomProducts };

@@ -1,30 +1,20 @@
-import { useEffect, useState, useRef } from "react";
-import CartItem from "./cartItem";
+import { useEffect, useRef } from "react";
+import CartItem from "../Components/cartItem";
 import CartSections, { AddressForm } from "../Styles/cartStyles";
-import { CheckoutCard, MobileCheckoutBtn } from "./checkoutCard";
-import { startSpinner, closeSpinner } from "./spinner";
-import toggleAddressForm from "../helper_functions/toggleAddressForm";
-import checkout from "../helper_functions/checkout";
+import { CheckoutCard, MobileCheckoutBtn } from "../Components/checkoutCard";
+import { useCart } from "../helpers/cartHandler";
+import { toggleAddressForm } from "../helpers/togglers";
+import checkout from "../helpers/checkoutHandler";
 
 export default function Cart() {
   let cartTotal = 0;
-  const [cartItems, setCartItems] = useState([]);
   const userAddress = useRef("");
   const userMobile = useRef(0);
 
+  const { cart: cartItems } = useCart();
+
   useEffect(() => {
     document.title = "Your Cart!🛒";
-    startSpinner();
-    fetch("/api/cart-items", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        closeSpinner();
-        if (data.message || !data) return;
-        else setCartItems(data);
-      })
-      .catch((err) => console.log(err));
   }, []);
 
   return (
@@ -39,13 +29,7 @@ export default function Cart() {
               const { _id, quantity, price } = item;
 
               cartTotal += price * quantity;
-              return (
-                <CartItem
-                  key={_id}
-                  ItemData={item}
-                  setCartItems={setCartItems}
-                />
-              );
+              return <CartItem key={_id} ItemData={item} />;
             })
           )}
           <div className="cart_item cart_total">

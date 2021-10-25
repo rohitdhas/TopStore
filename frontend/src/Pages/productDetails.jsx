@@ -1,14 +1,17 @@
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import Details from "../Styles/productDetailStyles";
-import { addToCart } from "../helper_functions/cartHandler";
+import { useCart } from "../helpers/cartHandler";
 
-export default function ProductDetails({ notify }) {
+export default function ProductDetails() {
   const { productID } = useParams();
   const [productData, setProductData] = useState({});
+  const server_url = process.env.REACT_APP_SERVER_URL;
+
+  const { addToCart } = useCart();
 
   useEffect(() => {
-    fetch(`/api/product-detail/${productID}`, {
+    fetch(`${server_url}/product-detail/${productID}`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -34,7 +37,7 @@ export default function ProductDetails({ notify }) {
                 ? "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam deleniti rerum beatae nihil nam harum. Debitis ratione nostrum ipsa, tempora a commodi saepe recusandae amet voluptate fuga similique asperiores itaque."
                 : productData.description}
             </p>
-            <button onClick={() => addToCart(productData, notify)}>
+            <button onClick={() => addToCart(productData)}>
               Add to Cart🛒
             </button>
           </div>

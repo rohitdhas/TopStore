@@ -7,10 +7,11 @@ const passport = require("passport");
 const mongoose = require("mongoose");
 const MongoStore = require('connect-mongo')
 const cookieParser = require("cookie-parser");
-const cartRoutes = require("./Controller/CartController");
-const searchRoutes = require("./Controller/SearchController");
-const stripeGateway = require("./Controller/StripeController");
-const userRoutes = require("./Controller/UserController");
+
+const cartRoutes = require("./Routes/cartRoutes");
+const searchRoutes = require("./Routes/searchRoutes");
+const stripeGateway = require("./Routes/stripeRoutes");
+const userRoutes = require("./Routes/userRoutes");
 // _________________________END OF IMPORTS________________________
 
 // Database Connection
@@ -42,11 +43,11 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
-    cookie: {
-      sameSite: "none",
-      secure: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    },
+    // cookie: {
+    //   sameSite: "none",
+    //   secure: true,
+    //   maxAge: 7 * 24 * 60 * 60 * 1000
+    // },
     store: MongoStore.create({ mongoUrl: dbURI }),
   })
 );

@@ -1,9 +1,7 @@
-import { startSpinner, closeSpinner } from "./spinner";
 import { SideBarBox, NavItemsMobile } from "../Styles/navStyles";
-import toggleSidebar from "../helper_functions/sidebar";
+import { toggleSidebar } from "../helpers/togglers";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { useHistory } from "react-router";
+import { useUserAuth, useUserData } from "../helpers/userHandler";
 
 export default function NavItemsForMobile() {
   return (
@@ -21,36 +19,12 @@ export default function NavItemsForMobile() {
 }
 
 function SideBar() {
-  const [username, setUsername] = useState("");
-  const history = useHistory();
+  const { full_name: username } = useUserData();
+  const { fireLogout } = useUserAuth();
 
-  useEffect(() => {
-    fetch("/api/data", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then(({ message, data }) => {
-        if (!data) {
-          console.log(message);
-        } else {
-          setUsername(data.full_name);
-        }
-      })
-      .catch((err) => console.log(err));
-  }, []);
-
-  function fireLogout() {
-    startSpinner();
-    fetch("/api/logout", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then(() => {
-        setUsername("");
-        history.push("/");
-        toggleSidebar();
-        closeSpinner();
-      });
+  function logout() {
+    fireLogout();
+    toggleSidebar();
   }
 
   return (
@@ -59,7 +33,7 @@ function SideBar() {
       <ul>
         <li>Hello, {username || "User"}!</li>
         {username ? (
-          <li onClick={fireLogout}>
+          <li onClick={logout}>
             <span>Logout</span>
             <i className="fas fa-sign-out-alt"></i>
           </li>

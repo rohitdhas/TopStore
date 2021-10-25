@@ -8,16 +8,6 @@ export default function Spinner() {
   );
 }
 
-export const startSpinner = () => {
-  let loader = document.getElementById("loader_overlay");
-  loader.classList.add("active");
-};
-
-export const closeSpinner = () => {
-  let loader = document.getElementById("loader_overlay");
-  loader.classList.remove("active");
-};
-
 const Overlay = styled.div`
   display: none;
   z-index: 1000;

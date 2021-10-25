@@ -109,8 +109,7 @@ const CartSections = styled.div`
 
 export const AddressForm = styled.div`
   #address_form_overlay {
-    transform: scale(0);
-    opacity: 0;
+    display: none;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -118,11 +117,9 @@ export const AddressForm = styled.div`
     left: 0;
     background-color: #0a0a0ab5;
     z-index: 100;
-    transition: all 0.3s ease-in;
 
     &.active {
-      opacity: 1;
-      transform: scale(1);
+      display: block;
     }
   }
 
@@ -130,17 +127,16 @@ export const AddressForm = styled.div`
     position: fixed;
     left: 50%;
     top: 22%;
-    transform: translateX(-50%) scale(0);
+    transform: translateX(-50%);
     background-color: white;
     padding: 10px;
     width: 300px;
     border-radius: 10px;
     z-index: 200;
 
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
-    transition: transform 0.3s ease-in;
 
     .form_title {
       color: black;
@@ -188,7 +184,8 @@ export const AddressForm = styled.div`
     }
 
     &.active {
-      transform: translateX(-50%) scale(1);
+      display: flex;
+      transform: translateX(-50%);
     }
   }
 `;

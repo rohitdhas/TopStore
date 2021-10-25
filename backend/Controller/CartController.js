@@ -1,13 +1,11 @@
-const express = require("express");
-const router = express.Router();
 const resMessages = require("./responseMessages");
 const User = require("../model/usersSchema");
 const Order = require("../model/orderSchema");
 const Product = require("../model/productSchema");
 
-
-router.post("/cart/modify", (req, res) => {
+const modifyCart = (req, res) => {
   const { type, data } = req.body;
+
   if (!req.user) {
     return res.json({ message: resMessages.unauthorized });
   } else {
@@ -29,18 +27,17 @@ router.post("/cart/modify", (req, res) => {
     } else {
       // Remove Item from Cart
       User.updateOne({ email }, { $pull: { cart: { _id: data._id } } })
-        .then(() => res.send({ message: resMessages.itemRemoved }))
+        .then(() => res.json({ message: resMessages.itemRemoved }))
         .catch((err) => console.log(err));
     }
   }
-});
+}
 
-router.post("/cart/item/modify", (req, res) => {
+const modifyCartItems = (req, res) => {
   const { type, data } = req.body;
   if (!req.user) return res.send({ message: resMessages.unauthorized });
   else {
     const { email } = req.user;
-
     let updateQuantity = data.quantity;
 
     if (type === "INCREMENT" && updateQuantity < 10) {
@@ -56,17 +53,17 @@ router.post("/cart/item/modify", (req, res) => {
       .then(() => res.send({ message: resMessages.cartItemUpdated }))
       .catch(() => res.send({ message: resMessages.err }));
   }
-});
+}
 
-router.get("/cart-items", (req, res) => {
+const getCartItems = (req, res) => {
   if (!req.user) res.json({ message: resMessages.err });
   else {
     const { cart } = req.user;
     res.json(cart);
   }
-});
+}
 
-router.post("/place-order", (req, res) => {
+const placeOrder = (req, res) => {
   if (!req.user) res.json({ message: resMessages.err });
   else {
     const { address, mobile } = req.body;
@@ -81,10 +78,9 @@ router.post("/place-order", (req, res) => {
     newOrder.save();
     res.end();
   }
-});
+}
 
-// Route to add new product on store
-router.post("/product/add", (req, res) => {
+const createNewProduct = (req, res) => {
   const product = new Product(req.body);
   try {
     product.save();
@@ -92,6 +88,6 @@ router.post("/product/add", (req, res) => {
   } catch {
     res.status(500).send({ message: resMessages.err });
   }
-});
+}
 
-module.exports = router;
+module.exports = { createNewProduct, placeOrder, getCartItems, modifyCart, modifyCartItems };

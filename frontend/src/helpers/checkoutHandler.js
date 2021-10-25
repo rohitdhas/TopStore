@@ -1,9 +1,11 @@
-import { startSpinner, closeSpinner } from "../Components/spinner";
+import { closeSpinner, startSpinner } from "./togglers";
+const server_url = process.env.REACT_APP_SERVER_URL;
+
 export default function checkout(e, address, mobile) {
     e.preventDefault();
     startSpinner();
 
-    fetch("/api/place-order", {
+    fetch(`${server_url}/place-order`, {
         credentials: "include",
         method: "POST",
         headers: {
@@ -15,7 +17,7 @@ export default function checkout(e, address, mobile) {
         }),
     });
 
-    fetch("/api/create-checkout", {
+    fetch(`${server_url}/create-checkout`, {
         credentials: "include",
     })
         .then((res) =>
