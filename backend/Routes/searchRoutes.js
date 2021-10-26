@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { searchAutoComplete, searchProducts, getProductDetails, getRandomProducts } = require('../controller/SearchController');
+const { searchAutoComplete, searchProducts, getProductDetails, getRandomProducts } = require('../Controller/SearchController');
 
 router.get("/product/:search", searchProducts);
 
