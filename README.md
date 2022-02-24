@@ -1,1 +1,1 @@
-## TopStore is an E-commerce Site Project
+## Topstore is an E-Commerce App
